@@ -1,0 +1,28 @@
+{
+  "name": "coinbase-trader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finwo/coinbase-trader.git"
+  },
+  "author": "Robin Bron <finwo@pm.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/finwo/coinbase-trader/issues"
+  },
+  "homepage": "https://github.com/finwo/coinbase-trader#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "finalhandler": "^1.1.2",
+    "morgan": "^1.10.0",
+    "rc": "^1.2.8",
+    "router": "^1.3.5",
+    "serve-static": "^1.14.1"
+  }
+}

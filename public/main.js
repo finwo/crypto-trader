@@ -1,5 +1,6 @@
 const {TimeSeries,SmoothieChart} = require('smoothie');
 const markets = {'XLM-EUR':0};
+const colors  = {'EUR':'#5AF','XLM':'#F55','XLM-EUR':'#0A0'};
 
 (async () => {
 
@@ -29,7 +30,7 @@ const markets = {'XLM-EUR':0};
     const marketSeries = new TimeSeries();
     marketChart.streamTo(document.getElementById(`market-${marketId.toLowerCase()}`));
     marketChart.addTimeSeries(marketSeries, {
-      strokeStyle: '#FFF',
+      strokeStyle: colors[marketId] || '#FFF',
       lineWidth  : 2,
     });
     setInterval(async () => {
@@ -54,7 +55,7 @@ const markets = {'XLM-EUR':0};
       if (!accountSeries[account.currency]) {
         accountSeries[account.currency] = new TimeSeries();
         accountChart.addTimeSeries( accountSeries[account.currency], {
-          strokeStyle: '#FFF',
+          strokeStyle: colors[account.currency] || '#FFF',
           lineWidth  : 2,
         });
       }

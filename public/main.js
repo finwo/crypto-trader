@@ -35,7 +35,7 @@ const colors  = {'EUR':'#5AF','XLM':'#F55','XLM-EUR':'#0A0'};
     });
     setInterval(async () => {
       const marketValue = markets[marketId] = await api.market.get({ id: marketId });
-      marketSeries.append(Date.now, marketValue);
+      marketSeries.append(Date.now(), marketValue);
     }, 6e4);
   });
 

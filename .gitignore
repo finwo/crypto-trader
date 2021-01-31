@@ -1,2 +1,5 @@
 node_modules/
 bak/
+public/app.js
+.env
+.env.*

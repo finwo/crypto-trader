@@ -1,0 +1,32 @@
+version: '3.2'
+
+services:
+
+  mysql:
+    image: biarms/mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - 'db_data:/var/lib/mysql'
+    ports:
+      - '3306:3306'
+
+  web:
+    env_file:
+      - .env.dev
+    build: .
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_URL: 'mysql://user:password@mysql/db'
+      PORT: 5000
+    ports:
+      - '5000:5000'
+
+volumes:
+  db_data:

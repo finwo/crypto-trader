@@ -1,0 +1,9 @@
+* {
+  box-sizing : border-box;
+  font-family: inherit;
+}
+html {
+  background : #000;
+  color      : #FFF;
+  font-family: sans-serif;
+}

@@ -15,7 +15,7 @@ const colors  = {'EUR':'#5AF','XLM':'#F55','XLM-EUR':'#0A0'};
       fontSize: parseInt(window.getComputedStyle(document.body, null).getPropertyValue('font-size')),
     },
     grid: {
-      millisPerLine: 9e5,
+      millisPerLine: 36e5,
       verticalSections: 8,
     },
     timestampFormatter: SmoothieChart.timeFormatter,

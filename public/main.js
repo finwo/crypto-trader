@@ -15,12 +15,12 @@ const colors  = {'EUR':'#5AF','XLM':'#F55','XLM-EUR':'#0A0'};
       fontSize: parseInt(window.getComputedStyle(document.body, null).getPropertyValue('font-size')),
     },
     grid: {
-      millisPerLine: 3e5,
+      millisPerLine: 6e5,
       verticalSections: 8,
     },
     timestampFormatter: SmoothieChart.timeFormatter,
     tooltip: true,
-    millisPerPixel: 6000,
+    millisPerPixel: 3e4,
     responsive: true,
   };
 

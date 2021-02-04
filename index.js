@@ -1,5 +1,5 @@
-const accounts   = {XLM:{available:0},EUR:{available:0}};
-const markets    = {'XLM-EUR':{price:0,minimum:1,precision:0,alt:'XLM'}};
+const accounts   = {ETH:{available:0},EUR:{available:0}};
+const markets    = {'ETH-EUR':{price:0,minimum:1,precision:0,alt:'ETH'}};
 const marketBase = 'EUR';
 const margin     = 1.00 / 100;
 const fees       = {make:0,take:0};

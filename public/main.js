@@ -1,6 +1,6 @@
 const {TimeSeries,SmoothieChart} = require('smoothie');
-const markets = {'XLM-EUR':0};
-const colors  = {'EUR':'#5AF','XLM':'#F55','XLM-EUR':'#0A0'};
+const markets = {'ETH-EUR':0};
+const colors  = {'EUR':'#5AF','ETH':'#0A0','ETH-EUR':'#0A0'};
 
 (async () => {
 
@@ -87,7 +87,7 @@ const colors  = {'EUR':'#5AF','XLM':'#F55','XLM-EUR':'#0A0'};
   //   responsive: true,
   // });
   // chart.addTimeSeries(rnd, {strokeStyle: '#0F0F', fillStyle: '#0F01', lineWidth: 4});
-  // chart.streamTo(document.getElementById('market-xlm-eur'));
+  // chart.streamTo(document.getElementById('market-eth-eur'));
 
 })();
 

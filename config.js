@@ -15,14 +15,14 @@ module.exports = {
       color    : '#0A0',
     },
 
-    // {
-    //   alt      : 'ZRX',
-    //   base     : 'EUR',
-    //   price    : 0,
-    //   minimum  : 1,
-    //   precision: 0,
-    //   color    : '#F55',
-    // },
+    {
+      alt      : 'ZRX',
+      base     : 'EUR',
+      price    : 0,
+      minimum  : 1,
+      precision: 4,
+      color    : '#F55',
+    },
 
   ],
 };

@@ -174,9 +174,9 @@ const trade = async () => {
   }));
 
   // Dump large history
-  while(app.history.length > 100) app.history.shift();
+  while(app.history.length > (app.config.histlen / app.config.interval)) app.history.shift();
 };
 
 // Kick-start trading
 trade();
-setInterval(trade, 3e4);
+setInterval(trade, app.config.interval);

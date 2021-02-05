@@ -1,4 +1,6 @@
 module.exports = {
+  interval   : 6e4,
+  histlen    : 24 * 60 * 60 * 1000,
   margin     : 1.00 / 100,
   marketBase : 'EUR',
   basecolor  : '#5AF',

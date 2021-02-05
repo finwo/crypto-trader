@@ -99,6 +99,7 @@ const cols   = {[config.marketBase]:config.basecolor};
 
         // Handle accounts
         Object.keys(record.account).forEach(currency => {
+          if (record.account[currency].value < 1) return;
           if (!AccountsSeries[currency]) {
             AccountsSeries[currency] = new TimeSeries();
             AccountsChart.addTimeSeries(AccountsSeries[currency], {

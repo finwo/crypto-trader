@@ -131,11 +131,12 @@ const trade = async () => {
     });
 
   // Balance out value
-  await Promise.all(app.config.markets.map(async market => {
+  for(const market of app.config.markets) {
+  // await Promise.all(app.config.markets.map(async market => {
     const marketId = `${market.alt}-${market.base}`;
 
     // No market info = skip
-    if (!data.market[marketId]) return;
+    if (!data.market[marketId]) continue;
 
     // Calculate value on both sides
     const balance_base = data.account[market.base].available;
@@ -151,7 +152,7 @@ const trade = async () => {
     };
 
     // Bail if order too small
-    if (order.size < market.minimum) return;
+    if (order.size < market.minimum) continue;
 
     // Sell if high
     if ( (balance_alt * (1 - (data.fee.take*2) - app.config.margin)) > balance_base ) {
@@ -164,14 +165,16 @@ const trade = async () => {
     }
 
     // Bail if no side was chosen
-    if (!order.side) return;
+    if (!order.side) continue;
 
     // Execute order
     const res = await coinbase.postOrder(order);
     const msg = {order};
     if (res.message) msg.message = res.message;
     console.log(msg);
-  }));
+    return;
+  // }));
+  }
 
   // Dump large history
   while(app.history.length > (app.config.histlen / app.config.interval)) app.history.shift();

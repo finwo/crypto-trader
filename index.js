@@ -139,33 +139,22 @@ const trade = async () => {
     if (!data.market[marketId]) continue;
 
     // Calculate value on both sides
-    const balance_base = data.account[market.base].available;
-    const balance_alt  = data.account[market.alt].available * data.market[marketId];
+    const balance_base = data.account[market.base].available / data.market[marketId] / app.config.markets.length;
+    const balance_alt  = data.account[market.alt].available;
     const diff         = Math.abs(balance_base - balance_alt);
 
     // Prepare order
     const order = {
       product_id: marketId,
-      side      : null,
+      side      : balance_alt > balance_base ? 'sell' : 'buy',
       type      : 'market',
-      size      : ((diff / 2) / data.market[marketId]).toFixed(market.precision),
+      size      : (diff / (1+(1/app.config.markets.length))).toFixed(market.precision),
     };
 
     // Bail if order too small
+    const minimum = balance_base * ((data.fee.take * 2) + app.config.margin)
     if (order.size < market.minimum) continue;
-
-    // Sell if high
-    if ( (balance_alt * (1 - (data.fee.take*2) - app.config.margin)) > balance_base ) {
-      order.side = 'sell';
-    }
-
-    // Buy if low
-    if ( (balance_alt * (1 + (data.fee.take*2) + app.config.margin)) < balance_base ) {
-      order.side = 'buy';
-    }
-
-    // Bail if no side was chosen
-    if (!order.side) continue;
+    if (order.size < minimum) continue;
 
     // Execute order
     const res = await coinbase.postOrder(order);
@@ -174,6 +163,7 @@ const trade = async () => {
     console.log(msg);
     return;
   // }));
+
   }
 
   // Dump large history

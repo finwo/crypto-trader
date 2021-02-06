@@ -50,19 +50,19 @@ const cols   = {[config.marketBase]:config.basecolor};
     elLegend.appendChild(info.el);
   });
 
-  // Initialize markets container
-  const elMarkets       = document.createElement('DIV');
-  const elMarketsTitle  = document.createElement('P');
-  const elMarketsCanvas = document.createElement('CANVAS');
-  elMarketsTitle.innerText = 'Markets';
-  elMarkets.appendChild(elMarketsTitle);
-  elMarkets.appendChild(elMarketsCanvas);
-  document.body.appendChild(elMarkets);
-  elMarketsCanvas.style.width  = '100%';
-  elMarketsCanvas.style.height = '240px';
-  const MarketsChart = new SmoothieChart(chartconf);
-  MarketsChart.streamTo(elMarketsCanvas);
-  const MarketsSeries = {};
+  // // Initialize markets container
+  // const elMarkets       = document.createElement('DIV');
+  // const elMarketsTitle  = document.createElement('P');
+  // const elMarketsCanvas = document.createElement('CANVAS');
+  // elMarketsTitle.innerText = 'Markets';
+  // elMarkets.appendChild(elMarketsTitle);
+  // elMarkets.appendChild(elMarketsCanvas);
+  // document.body.appendChild(elMarkets);
+  // elMarketsCanvas.style.width  = '100%';
+  // elMarketsCanvas.style.height = '240px';
+  // const MarketsChart = new SmoothieChart(chartconf);
+  // MarketsChart.streamTo(elMarketsCanvas);
+  // const MarketsSeries = {};
 
   // Initialize accounts container
   const elAccounts       = document.createElement('DIV');

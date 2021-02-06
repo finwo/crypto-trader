@@ -107,7 +107,8 @@ const cols   = {[config.marketBase]:config.basecolor};
               lineWidth  : 2,
             });
           }
-          AccountsSeries[currency].append(record.timestamp, record.account[currency].value);
+          const val = record.account[currency].value / (currency == config.marketBase ? config.markets.length : 1);
+          AccountsSeries[currency].append(record.timestamp, val);
         });
       });
   };

@@ -12,7 +12,16 @@ module.exports = {
       price    : 0,
       minimum  : 1,
       precision: 0,
-      color    : '#F55',
+      color    : '#AA0',
+    },
+
+    {
+      alt      : 'ETH',
+      base     : 'EUR',
+      price    : 0,
+      minimum  : 0.01,
+      precision: 4,
+      color    : '#AAA',
     },
 
     // {

@@ -85,17 +85,17 @@ const cols   = {[config.marketBase]:config.basecolor};
       .forEach(record => {
         lastData = record.timestamp;
 
-        // Handle markets
-        Object.keys(record.market).forEach(marketId => {
-          if (!MarketsSeries[marketId]) {
-            MarketsSeries[marketId] = new TimeSeries();
-            MarketsChart.addTimeSeries(MarketsSeries[marketId], {
-              strokeStyle: cols[marketId] || '#FFF',
-              lineWidth  : 2,
-            });
-          }
-          MarketsSeries[marketId].append(record.timestamp, record.market[marketId]);
-        });
+        // // Handle markets
+        // Object.keys(record.market).forEach(marketId => {
+        //   if (!MarketsSeries[marketId]) {
+        //     MarketsSeries[marketId] = new TimeSeries();
+        //     MarketsChart.addTimeSeries(MarketsSeries[marketId], {
+        //       strokeStyle: cols[marketId] || '#FFF',
+        //       lineWidth  : 2,
+        //     });
+        //   }
+        //   MarketsSeries[marketId].append(record.timestamp, record.market[marketId]);
+        // });
 
         // Handle accounts
         Object.keys(record.account).forEach(currency => {

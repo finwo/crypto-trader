@@ -6,6 +6,15 @@ module.exports = {
   basecolor  : '#5AF',
   markets    : [
 
+    {
+      alt      : 'ALGO',
+      base     : 'EUR',
+      price    : 0,
+      minimum  : 1,
+      precision: 0,
+      color    : '#F55',
+    },
+
     // {
     //   alt      : 'XLM',
     //   base     : 'EUR',

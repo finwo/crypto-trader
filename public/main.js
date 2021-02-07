@@ -113,5 +113,5 @@ const cols   = {[config.marketBase]:config.basecolor};
       });
   };
   fetchData();
-  setInterval(fetchData,1e4);
+  setInterval(fetchData,9e3);
 })();

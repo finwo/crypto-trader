@@ -67,7 +67,7 @@ const cols   = {[config.marketBase]:config.basecolor};
   // Fetch data to show periodically
   let   lastData  = 0;
   const fetchData = async () => {
-    const records = await api.data.fetch({since: lastData, limit: 1});
+    const records = await api.data.fetch({since: lastData, limit: 5});
     if ((!records) || !records.length) return setTimeout(fetchData, config.interval / 2);
 
     for(const record of records) {
@@ -89,7 +89,7 @@ const cols   = {[config.marketBase]:config.basecolor};
 
     }
 
-    setTimeout(fetchData, 10);
+    setTimeout(fetchData, 1);
   };
 
   fetchData();

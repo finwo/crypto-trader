@@ -3,7 +3,7 @@ module.exports = {
   histlen    : 8 * 60 * 60 * 1000,
   margin     : 2.00 / 100,
   marketBase : 'EUR',
-  basecolor  : '#5AF',
+  basecolor  : '#FFF',
   markets    : [
 
     {
@@ -12,7 +12,7 @@ module.exports = {
       price    : 0,
       minimum  : 1,
       precision: 0,
-      color    : '#AA0',
+      color    : '#FFF',
     },
 
     {
@@ -21,7 +21,7 @@ module.exports = {
       price    : 0,
       minimum  : 0.001,
       precision: 4,
-      color    : '#A0A',
+      color    : '#FFF',
     },
 
     {
@@ -30,7 +30,7 @@ module.exports = {
       price    : 0,
       minimum  : 0.01,
       precision: 4,
-      color    : '#AAA',
+      color    : '#FFF',
     },
 
     {
@@ -39,7 +39,7 @@ module.exports = {
       price    : 0,
       minimum  : 1,
       precision: 0,
-      color    : '#0A0',
+      color    : '#FFF',
     },
 
     {
@@ -48,8 +48,16 @@ module.exports = {
       price    : 0,
       minimum  : 1,
       precision: 4,
-      color    : '#F55',
+      color    : '#FFF',
     },
 
   ],
 };
+
+// Auto-color base & markets (50% saturation, 50% brightness)
+const {gen_colors,rgb_to_hex} = require('./colgen');
+const colors = gen_colors(1+module.exports.markets.length, 0.5, 128);
+module.exports.basecolor = rgb_to_hex(colors.shift());
+module.exports.markets.forEach(market => {
+  market.color = rgb_to_hex(colors.shift());
+});

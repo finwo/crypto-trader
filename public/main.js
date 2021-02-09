@@ -50,20 +50,6 @@ const cols   = {[config.marketBase]:config.basecolor};
     elLegend.appendChild(info.el);
   });
 
-  // // Initialize markets container
-  // const elMarkets       = document.createElement('DIV');
-  // const elMarketsTitle  = document.createElement('P');
-  // const elMarketsCanvas = document.createElement('CANVAS');
-  // elMarketsTitle.innerText = 'Markets';
-  // elMarkets.appendChild(elMarketsTitle);
-  // elMarkets.appendChild(elMarketsCanvas);
-  // document.body.appendChild(elMarkets);
-  // elMarketsCanvas.style.width  = '100%';
-  // elMarketsCanvas.style.height = '240px';
-  // const MarketsChart = new SmoothieChart(chartconf);
-  // MarketsChart.streamTo(elMarketsCanvas);
-  // const MarketsSeries = {};
-
   // Initialize accounts container
   const elAccounts       = document.createElement('DIV');
   const elAccountsTitle  = document.createElement('P');
@@ -81,37 +67,30 @@ const cols   = {[config.marketBase]:config.basecolor};
   // Fetch data to show periodically
   let   lastData  = 0;
   const fetchData = async () => {
-    (await api.data.fetch({since: lastData}))
-      .forEach(record => {
-        lastData = record.timestamp;
+    const records = await api.data.fetch({since: lastData, limit: 1});
+    if ((!records) || !records.length) return setTimeout(fetchData, config.interval / 2);
 
-        // // Handle markets
-        // Object.keys(record.market).forEach(marketId => {
-        //   if (!MarketsSeries[marketId]) {
-        //     MarketsSeries[marketId] = new TimeSeries();
-        //     MarketsChart.addTimeSeries(MarketsSeries[marketId], {
-        //       strokeStyle: cols[marketId] || '#FFF',
-        //       lineWidth  : 2,
-        //     });
-        //   }
-        //   MarketsSeries[marketId].append(record.timestamp, record.market[marketId]);
-        // });
+    for(const record of records) {
+      lastData = record.timestamp;
 
-        // Handle accounts
-        Object.keys(record.account).forEach(currency => {
-          if (record.account[currency].value < 1) return;
-          if (!AccountsSeries[currency]) {
-            AccountsSeries[currency] = new TimeSeries();
-            AccountsChart.addTimeSeries(AccountsSeries[currency], {
-              strokeStyle: cols[currency] || '#FFF',
-              lineWidth  : 2,
-            });
-          }
-          const val = record.account[currency].value / (currency == config.marketBase ? config.markets.length : 1);
-          AccountsSeries[currency].append(record.timestamp, val);
-        });
+      // Handle accounts
+      Object.keys(record.account).forEach(currency => {
+        if (record.account[currency].value < 1) return;
+        if (!AccountsSeries[currency]) {
+          AccountsSeries[currency] = new TimeSeries();
+          AccountsChart.addTimeSeries(AccountsSeries[currency], {
+            strokeStyle: cols[currency] || '#FFF',
+            lineWidth  : 2,
+          });
+        }
+        const val = record.account[currency].value / (currency == config.marketBase ? config.markets.length : 1);
+        AccountsSeries[currency].append(record.timestamp, val);
       });
+
+    }
+
+    setTimeout(fetchData, 100);
   };
-  await fetchData();
-  setInterval(fetchData,1e4);
+
+  fetchData();
 })();

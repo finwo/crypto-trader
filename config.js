@@ -16,6 +16,15 @@ module.exports = {
     },
 
     {
+      alt      : 'BTC',
+      base     : 'EUR',
+      price    : 0,
+      minimum  : 0.001,
+      precision: 4,
+      color    : '#A0A',
+    },
+
+    {
       alt      : 'ETH',
       base     : 'EUR',
       price    : 0,

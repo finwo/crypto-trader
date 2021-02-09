@@ -89,7 +89,7 @@ const cols   = {[config.marketBase]:config.basecolor};
 
     }
 
-    setTimeout(fetchData, 100);
+    setTimeout(fetchData, 10);
   };
 
   fetchData();

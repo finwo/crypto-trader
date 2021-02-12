@@ -67,29 +67,33 @@ const cols   = {[config.marketBase]:config.basecolor};
   // Fetch data to show periodically
   let   lastData  = 0;
   const fetchData = async () => {
-    const records = await api.data.fetch({since: lastData, limit: 5});
-    if ((!records) || !records.length) return setTimeout(fetchData, config.interval / 2);
+    try {
+      const records = await api.data.fetch({since: lastData, limit: 5});
+      if ((!records) || !records.length) return setTimeout(fetchData, config.interval / 2);
 
-    for(const record of records) {
-      lastData = record.timestamp;
+      for(const record of records) {
+        lastData = record.timestamp;
 
-      // Handle accounts
-      Object.keys(record.account).forEach(currency => {
-        if (record.account[currency].value < 1) return;
-        if (!AccountsSeries[currency]) {
-          AccountsSeries[currency] = new TimeSeries();
-          AccountsChart.addTimeSeries(AccountsSeries[currency], {
-            strokeStyle: cols[currency] || '#FFF',
-            lineWidth  : 2,
-          });
-        }
-        const val = record.account[currency].value / (currency == config.marketBase ? config.markets.length : 1);
-        AccountsSeries[currency].append(record.timestamp, val);
-      });
+        // Handle accounts
+        Object.keys(record.account).forEach(currency => {
+          if (record.account[currency].value < 1) return;
+          if (!AccountsSeries[currency]) {
+            AccountsSeries[currency] = new TimeSeries();
+            AccountsChart.addTimeSeries(AccountsSeries[currency], {
+              strokeStyle: cols[currency] || '#FFF',
+              lineWidth  : 2,
+            });
+          }
+          const val = record.account[currency].value / (currency == config.marketBase ? config.markets.length : 1);
+          AccountsSeries[currency].append(record.timestamp, val);
+        });
 
+      }
+
+      setTimeout(fetchData, 1);
+    } catch(e) {
+      setTimeout(fetchData, config.interval / 2);
     }
-
-    setTimeout(fetchData, 1);
   };
 
   fetchData();

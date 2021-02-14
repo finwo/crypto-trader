@@ -3,6 +3,15 @@ const {HttpOk} = app;
 module.exports = [
 
   {
+    method: 'get',
+    path: '/config',
+    name: 'config',
+    async handler() {
+      return new HttpOk(app.config);
+    },
+  },
+
+  {
     method: 'post',
     path: '/data',
     name: 'data.fetch',

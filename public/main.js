@@ -1,6 +1,4 @@
 const {TimeSeries,SmoothieChart} = require('smoothie');
-const config = require('../config');
-const cols   = {[config.marketBase]:config.basecolor};
 
 (async () => {
 
@@ -8,6 +6,12 @@ const cols   = {[config.marketBase]:config.basecolor};
   while(document.readyState !== 'complete') {
     await new Promise(r => setTimeout(r, 100));
   }
+
+  // Fetch config
+  const config = await api.config();
+  const cols   = {[config.marketBase]:config.basecolor};
+
+  console.log({config,cols});
 
   // Common chart config
   const chartconf = {
@@ -23,8 +27,6 @@ const cols   = {[config.marketBase]:config.basecolor};
     millisPerPixel: 3e4,
     responsive: true,
   };
-
-  // Initialize interface
 
   // Initialize legend container
   const elLegend          = document.createElement('DIV');
@@ -84,7 +86,7 @@ const cols   = {[config.marketBase]:config.basecolor};
               lineWidth  : 2,
             });
           }
-          const val = record.account[currency].value / (currency == config.marketBase ? config.markets.length : 1);
+          const val = record.account[currency].value;
           AccountsSeries[currency].append(record.timestamp, val);
         });
 

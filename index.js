@@ -118,6 +118,9 @@ const trade = async () => {
       account.hold      = parseFloat(account.hold);
       account.available = parseFloat(account.available);
       account.value     = (data.market[`${account.currency}-${app.config.marketBase}`] || 1) * account.available;
+      if (account.currency == app.config.marketBase) {
+        account.value /= app.config.markets.length;
+      }
       return account.available > 0.001;
     })
     .forEach(account => {
@@ -132,38 +135,47 @@ const trade = async () => {
 
   // Balance out value
   for(const market of app.config.markets) {
-  // await Promise.all(app.config.markets.map(async market => {
     const marketId = `${market.alt}-${market.base}`;
 
     // No market info = skip
     if (!data.market[marketId]) continue;
 
-    // Calculate value on both sides
-    const balance_base = data.account[market.base].available / data.market[marketId] / app.config.markets.length;
-    const balance_alt  = data.account[market.alt].available;
-    const diff         = Math.abs(balance_base - balance_alt);
-
-    // Prepare order
+    // Start preparing order
+    const diff  = Math.abs(data.account[market.alt].value - data.account[market.base].value);
     const order = {
       product_id: marketId,
-      side      : balance_alt > balance_base ? 'sell' : 'buy',
+      side      : data.account[market.alt].value > data.account[market.base].value ? 'sell' : 'buy',
       type      : 'market',
-      size      : (diff / (1+(1/app.config.markets.length))).toFixed(market.precision),
+      size      : diff / (1+(1/app.config.markets.length)) / data.market[marketId],
     };
 
-    // Bail if order too small
-    const minimum = balance_base * ((data.fee.take * 2) + app.config.margin)
-    if (order.size < market.minimum) continue;
-    if (order.size < minimum) continue;
+    // Fix roundings according to market
+    order.size = Math.round(order.size * Math.pow(10,market.precision)) / Math.pow(10,market.precision);
+
+    // Bail if the order is too small
+    const bandstop = data.account[market.alt].available * ((data.fee.take * 2) + app.config.margin)
+    if (order.size < Math.pow(10,0 - market.minimum)) continue;
+    if (order.size < bandstop) continue;
 
     // Execute order
     const res = await coinbase.postOrder(order);
     const msg = {order};
     if (res.message) msg.message = res.message;
     console.log(msg);
-    return;
-  // }));
 
+    // Adjust precision
+    if (res.message && (res.message.substr(0,20) == 'size is too accurate')) {
+      market.precision -= 1;
+      continue;
+    }
+
+    // Adjust minimum
+    if (res.message && (res.message.substr(0,17) == 'size is too small')) {
+      market.minimum -= 1;
+      continue;
+    }
+
+    return;
   }
 
   // Dump large history

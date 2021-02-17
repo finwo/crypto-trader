@@ -1,14 +1,16 @@
 module.exports = [
+
   {
     method: 'get',
-    path  : '/manifest.json',
+    path  : '/api/manifest.json',
     async handler(req, res) {
       return new app.HttpOk(app.manifest);
     }
   },
+
   {
     method: 'get',
-    path: '/client.js',
+    path: '/api/client.js',
     async handler(req, res) {
       res.writeHead(200, {
         'content-type': 'application/javascript',
@@ -68,4 +70,5 @@ module.exports = [
 });`);
     },
   },
+
 ];

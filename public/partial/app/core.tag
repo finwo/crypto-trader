@@ -3,6 +3,7 @@
 </template>
 <script>
   window.app = this;
+  this.kp = null;
   this.dependencies = [
     'page-404',
     'page-home',
@@ -21,13 +22,9 @@
   },{});
 
   this.state = {
-    page    : '404',
+    page    : 'loading',
     loggedIn: false,
   };
-
-  if (this.route[document.location.pathname]) {
-    this.state.page = this.route[document.location.pathname];
-  }
 
   this.formData = form => {
     return Array.from(form.querySelectorAll('[name]')).reduce((r,el) => {
@@ -43,5 +40,26 @@
       return r;
     }, {});
   };
+
+  (async () => {
+
+    // Hydrate keypair
+    if (localStorage['auth:kp']) {
+      try {
+        this.kp = hydrateKeyPair(JSON.parse(localStorage['auth:kp']));
+        this.state.loggedIn = true;
+      } catch(e) {
+        // Intentionally blank
+      }
+    }
+
+    // Handle routing
+    if (this.route[document.location.pathname]) {
+      this.state.page = this.route[document.location.pathname];
+    }
+
+  })();
+
+
 
 </script>

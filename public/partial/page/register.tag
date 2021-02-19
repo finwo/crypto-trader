@@ -58,11 +58,22 @@
   };
 
   app.register = async form => {
+
+    // Check the form
     const valid = app.register_validation(form);
     if (!valid) return form.reportValidity();
     const data = app.formData(form);
-    delete data['password-repeat'];
-    const response = await api.auth.register(data);
+
+    // Generate keypair
+    const kp       = await generateKeyPair({ username: data.email, password: data.password });
+    const postData = {
+      email: data.email,
+      pubkey: kp.publicKey.toString('base64'),
+      signature: (await kp.sign(data.email)).toString('base64'),
+    };
+
+    // Actually register
+    const response = await api.auth.register(postData);
 
     // Handle error
     if ((!response.ok) && response.field) {
@@ -74,8 +85,12 @@
       }, 5000);
     }
 
+    // Fetch authentication token
+
+
     // Success!!
-    console.log({data,response});
+
+    /* console.log({data,response}); */
   };
 
 </script>

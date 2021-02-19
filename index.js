@@ -3,9 +3,11 @@ const cors         = require('cors');
 const fs           = require('fs');
 const http         = require('http');
 const morgan       = require('morgan');
+const rc4          = require('rc4-crypt');
 const scandir      = require('./lib/scandir');
 const Sequelize    = require('sequelize');
 const serveStatic  = require('serve-static');
+const supercop     = require('supercop');
 
 // Initialize app
 const Router = require('router');
@@ -20,12 +22,15 @@ app.regex = {
 
 (async () => {
 
-  // Load conifg (shown = default)
+  // Load config (shown = default)
   app.config = require('rc')('cbtrader', {
     ...require('./config'),
     port: parseFloat(process.env.PORT || 8080),
     db  : process.env.DATABASE_URL || 'sqlite::memory:',
   });
+
+  // Initialize auth key
+  app.keypair = await supercop.createKeyPair(rc4(app.config.authseed)(' '.repeat(supercop.createSeed().length)));
 
   // Add middleware
   app.use(morgan('tiny'));
@@ -33,11 +38,12 @@ app.regex = {
   app.use(bodyParser.json());
 
   // Initialize global http responses
-  app.HttpResponse   = require('./lib/http/http-response');
-  app.HttpOk         = require('./lib/http/http-ok');
   app.HttpBadRequest = require('./lib/http/http-bad-request');
-  app.HttpNotFound   = require('./lib/http/http-not-found');
+  app.HttpConflict   = require('./lib/http/http-conflict.js');
   app.HttpError      = require('./lib/http/http-error');
+  app.HttpNotFound   = require('./lib/http/http-not-found');
+  app.HttpOk         = require('./lib/http/http-ok');
+  app.HttpResponse   = require('./lib/http/http-response');
 
   // Fetch all routes
   const routes = [];

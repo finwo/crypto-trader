@@ -1,4 +1,26 @@
-const fwebc          = require('fwebc');
+const fwebc    = require('fwebc');
+const rc4      = require('rc4-crypt');
+const supercop = require('supercop');
+
+window.Buffer = require('buffer').Buffer;
+
+window.hydrateKeyPair = kp => {
+  const pk = kp.pk || kp.public_key || kp.publicKey;
+  const sk = kp.sk || kp.secret_key || kp.secretKey;
+  return supercop.keyPairFrom({
+    publicKey: Buffer.from(pk),
+    secretKey: Buffer.from(sk),
+  });
+};
+
+window.generateKeyPair = ({username, password}) => {
+  const length = supercop.createSeed().length;
+  const coder  = rc4(password || '');
+  const data   = username.repeat(Math.ceil(length / username.length)).substr(0,length);
+  const seed   = coder(data);
+  return supercop.createKeyPair(seed);
+};
+
 fwebc.load('app-core');
 
 // const {TimeSeries,SmoothieChart} = require('smoothie');

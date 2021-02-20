@@ -2,22 +2,26 @@
   <page-${page}></page-${page}>
 </template>
 <script>
-  window.app = this;
-  this.kp    = null;
-  this.token = null;
+  window.app   = this;
+  this.kp      = null;
+  this.token   = null;
+  this.account = null;
 
   this.dependencies = [
     'page-404',
     'page-home',
     'page-login',
+    'page-portfolios',
     'page-register',
   ];
 
   this.route = {
-    "/"        : "home",
-    "/login"   : "login",
-    "/register": "register",
+    "/"          : "home",
+    "/login"     : "login",
+    "/portfolios": "portfolios",
+    "/register"  : "register",
   };
+
   this.page = Object.keys(this.route).reduce((a,route) => {
     a[this.route[route]] = route;
     return a;
@@ -28,19 +32,33 @@
     loggedIn: false,
   };
 
+  // Returns named fields from 
   this.formData = form => {
     return Array.from(form.querySelectorAll('[name]')).reduce((r,el) => {
-      const name = el.getAttribute('name');
+      const path    = el.getAttribute('name').split('.');
+      const lastkey = path.pop();
+      let   ref     = r;
+      while(path.length) {
+        const key = path.shift();
+        ref = ref[key] = ref[key] || {};
+      }
       switch(el.getAttribute('type')) {
         case 'checkbox':
-          r[name] = !!el.checked;
+          ref[lastkey] = !!el.checked;
           break;
         default:
-          r[name] = el.value;
+          ref[lastkey] = el.value;
           break;
       }
       return r;
     }, {});
+  };
+
+  this.logout = () => {
+    delete localStorage['auth:email'];
+    delete localStorage['auth:token'];
+    delete localStorage['auth:kp'];
+    document.location.reload();
   };
 
   (async () => {
@@ -58,18 +76,18 @@
     if (localStorage['auth:token']) {
       this.token = localStorage['auth:token'];
       api.setToken(this.token);
-    }
 
-    // Account fetch attempt
-    let {account} = await api.account.me();
-    if (account) {
-      this.account        = account;
-      this.state.loggedIn = true;
+      // Account fetch attempt
+      let {account} = await api.account.me();
+      if (account) {
+        this.account        = account;
+        this.state.loggedIn = true;
+      }
     }
 
     // No account = broken token
     // Attempt login
-    if ((!account) && localStorage['auth:email'] && this.kp) {
+    if ((!this.account) && localStorage['auth:email'] && this.kp) {
       const postData = {
         email    : localStorage['auth:email'],
         signature: (await this.kp.sign(localStorage['auth:email'])).toString('base64'),

@@ -1,7 +1,7 @@
 <template>
-  <header class="sticky">
-    <a href="#" role="button">Home</a>
-    <a href="#" role="button">About</a>
-    <a href="#" role="button">Contact</a>
-  </header>
+  <div class="nav">
+    <h5 class="nav-logo"><a href="/">Logo</a></h5>
+    <div class="col"></div>
+    <a class="nav-item" href="#!" onclick="app.logout();">Log out</a>
+  </div>
 </template>

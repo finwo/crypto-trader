@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
     if (tokenhead.alg !== 'ed25519') return next();
     if (tokenbody.iss !== 'finwo'  ) return next();
     if (tokenbody.iat >   now      ) return next();
-    // if (tokenbody.exp <   now      ) return next();
+    if (tokenbody.exp <   now      ) return next();
 
     // Validate signature
     if (!(await app.keypair.verify(tokensignature, tokensigned))) {

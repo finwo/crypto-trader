@@ -36,14 +36,17 @@ app.regex = {
   app.use(morgan('tiny'));
   app.use(cors());
   app.use(bodyParser.json());
+  app.use(require('./middleware/auth'));
 
   // Initialize global http responses
-  app.HttpBadRequest = require('./lib/http/http-bad-request');
-  app.HttpConflict   = require('./lib/http/http-conflict.js');
-  app.HttpError      = require('./lib/http/http-error');
-  app.HttpNotFound   = require('./lib/http/http-not-found');
-  app.HttpOk         = require('./lib/http/http-ok');
-  app.HttpResponse   = require('./lib/http/http-response');
+  app.HttpBadRequest       = require('./lib/http/http-bad-request');
+  app.HttpConflict         = require('./lib/http/http-conflict.js');
+  app.HttpError            = require('./lib/http/http-error');
+  app.HttpNotFound         = require('./lib/http/http-not-found');
+  app.HttpOk               = require('./lib/http/http-ok');
+  app.HttpPermissionDenied = require('./lib/http/http-permission-denied');
+  app.HttpResponse         = require('./lib/http/http-response');
+  app.HttpUnauthorized     = require('./lib/http/http-unauthorized');
 
   // Fetch all routes
   const routes = [];

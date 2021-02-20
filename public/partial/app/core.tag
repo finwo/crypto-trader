@@ -3,7 +3,9 @@
 </template>
 <script>
   window.app = this;
-  this.kp = null;
+  this.kp    = null;
+  this.token = null;
+
   this.dependencies = [
     'page-404',
     'page-home',
@@ -47,9 +49,41 @@
     if (localStorage['auth:kp']) {
       try {
         this.kp = hydrateKeyPair(JSON.parse(localStorage['auth:kp']));
-        this.state.loggedIn = true;
       } catch(e) {
         // Intentionally blank
+      }
+    }
+
+    // Fetch token to check if we're logged in
+    if (localStorage['auth:token']) {
+      this.token = localStorage['auth:token'];
+      api.setToken(this.token);
+    }
+
+    // Account fetch attempt
+    let {account} = await api.account.me();
+    if (account) {
+      this.account        = account;
+      this.state.loggedIn = true;
+    }
+
+    // No account = broken token
+    // Attempt login
+    if ((!account) && localStorage['auth:email'] && this.kp) {
+      const postData = {
+        email    : localStorage['auth:email'],
+        signature: (await this.kp.sign(localStorage['auth:email'])).toString('base64'),
+      };
+      const loginResponse = await api.auth.login(postData);
+      if (loginResponse.ok) {
+        localStorage['auth:token'] = loginResponse.token;
+        api.setToken(loginResponse.token);
+        // Account fetch attempt (again)
+        let {account} = await api.account.me();
+        if (account) {
+          this.account        = account;
+          this.state.loggedIn = true;
+        }
       }
     }
 

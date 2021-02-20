@@ -85,12 +85,15 @@
       }, 5000);
     }
 
-    // Fetch authentication token
-
-
     // Success!!
 
-    /* console.log({data,response}); */
+    // Fetch authentication token
+    localStorage['auth:email'] = data.email;
+    localStorage['auth:kp']    = JSON.stringify(kp);
+    localStorage['auth:token'] = response.token;
+
+    // Redirect home
+    document.location.href = app.page.home;
   };
 
 </script>

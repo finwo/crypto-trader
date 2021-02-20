@@ -12,7 +12,7 @@
 
             <div>
               <label>Email</label>
-              <input type="email" name="username" placeholder="someone@example.com">
+              <input type="email" name="email" placeholder="someone@example.com">
             </div>
             <div>
               <label>Password</label>
@@ -45,7 +45,35 @@
 
   app.login = async form => {
     const data = app.formData(form);
-    console.log({data});
+
+    // Generate keypair
+    const kp       = await generateKeyPair({ username: data.email, password: data.password });
+    const postData = {
+      email: data.email,
+      signature: (await kp.sign(data.email)).toString('base64'),
+    };
+
+    // Actually perform login
+    const response = await api.auth.login(postData);
+
+    // Handle error
+    if ((!response.ok) && response.field) {
+      // TODO: handle error without field
+      form.querySelector(`[name=${response.field}]`).setCustomValidity(response.message);
+      form.reportValidity();
+      return setTimeout(() => {
+        form.querySelector(`[name=${response.field}]`).setCustomValidity('');
+      }, 5000);
+    }
+
+    // Fetch authentication token
+    localStorage['auth:email'] = data.email;
+    localStorage['auth:kp']    = JSON.stringify(kp);
+    localStorage['auth:token'] = response.token;
+    api.setToken(response.token);
+
+    // Redirect home
+    document.location.href = app.page.home;
   };
 
 </script>

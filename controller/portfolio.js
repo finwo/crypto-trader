@@ -79,37 +79,6 @@ module.exports = [
   },
 
   {
-    method: 'get',
-    path  : '/api/portfolio',
-    name  : 'portfolio.list',
-    async handler(req, res) {
-      if (!req.auth.ok) return new app.HttpUnauthorized({ok:false,message:'Authentication required'});
-
-      // Fetch portfolios
-      const portfolios = await app.db.models.Portfolio.findAll({
-        where: {
-          account: req.auth.account.id,
-        },
-      });
-
-      // Remove stuff that shouldn't leak
-      await Promise.all(portfolios.map(async (portfolio,i) => {
-        portfolio = portfolio.toJSON();
-        const Exchange = exchanges[portfolio.exchange];
-        const exchange = new Exchange(portfolio);
-        delete portfolio.credentials;
-        portfolios[i] = portfolio;
-        portfolio.value = await exchange.getValue();
-      }));
-
-      return new app.HttpOk({
-        ok: true,
-        portfolios,
-      });
-    },
-  },
-
-  {
     method: 'post',
     path  : '/api/portfolio',
     name  : 'portfolio.create',
@@ -202,16 +171,49 @@ module.exports = [
       return new app.HttpOk({ok:true});
     },
   },
-  // {
-  //   method: 'get',
-  //   path  : '/api/portfolio/:id',
-  //   name  : 'portfolio.get',
-  //   async handler(req, res) {
-  //     // if (!req.auth.ok) return new app.HttpUnauthorized({ok:false,message:'Authentication required'});
-  //     // return new app.HttpOk({ok:true,account:req.auth.account});
-  //     return new app.HttpOk({ok:true});
-  //   },
-  // },
 
+  {
+    method: 'get',
+    path  : '/api/portfolio',
+    name  : 'portfolio.list',
+    async handler(req, res) {
+      if (!req.auth.ok) return new app.HttpUnauthorized({ok:false,message:'Authentication required'});
+
+      // Fetch portfolios
+      const portfolios = await app.db.models.Portfolio.findAll({
+        where: {
+          account: req.auth.account.id,
+        },
+      });
+
+      // Remove stuff that shouldn't leak
+      await Promise.all(portfolios.map(async (portfolio,i) => {
+        portfolio = portfolio.toJSON();
+        const Exchange = exchanges[portfolio.exchange];
+        const exchange = new Exchange(portfolio);
+        delete portfolio.credentials;
+        portfolios[i] = portfolio;
+        portfolio.value   = await exchange.getValue();
+        portfolio.markets = (await exchange.getMarkets()).filter(market => market.quote == portfolio.baseCurrency);
+      }));
+
+      return new app.HttpOk({
+        ok: true,
+        portfolios,
+      });
+    },
+  },
+
+  {
+    method: 'get',
+    path  : '/api/portfolio/:id',
+    name  : 'portfolio.get',
+    async handler(req, res) {
+      return new app.HttpBadRequest({
+        ok: false,
+        message: 'Method not implemented yet',
+      });
+    },
+  },
 
 ];

@@ -7,6 +7,16 @@ html, body {
   padding: 0;
 }
 
+::-webkit-scrollbar {
+  width: 1em;
+}
+::-webkit-scrollbar-track {
+	background: #FFF;
+}
+::-webkit-scrollbar-thumb {
+  background: #111;
+}
+
 button, button.outline {
   cursor: pointer;
   border: 2px solid #111;
@@ -40,6 +50,10 @@ dialog::backdrop {
 
 .padded {
   padding: 1em;
+}
+
+.hidden {
+  display: none;
 }
 
 input, select, option, textarea {

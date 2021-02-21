@@ -54,6 +54,24 @@
     }, {});
   };
 
+  this.arrayUnique = arr => {
+    return arr.filter((e,i) => arr.indexOf(e) == i);
+  };
+
+  this.addClass = (el, cls) => {
+    if (el instanceof NodeList) el = Array.from(el);
+    if (Array.isArray(el)) return el.forEach(e => this.addClass(e,cls));
+    const classes = el.className.split(' ');
+    classes.push(cls);
+    el.className = this.arrayUnique(classes).join(' ');
+  };
+
+  this.removeClass = (el, cls) => {
+    if (el instanceof NodeList) el = Array.from(el);
+    if (Array.isArray(el)) return el.forEach(e => this.removeClass(e,cls));
+    el.className = el.className.split(' ').filter(e => e && e != cls);
+  };
+
   this.logout = () => {
     delete localStorage['auth:email'];
     delete localStorage['auth:token'];

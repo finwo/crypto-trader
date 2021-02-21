@@ -111,7 +111,7 @@
       }
       total.value += portfolio.value;
       if (!~this.state.totals.indexOf(total)) {
-        this.state.totals.push(total);
+        this.state.totals[this.state.totals.length] = total;
       }
     });
   })();
@@ -138,12 +138,15 @@
   };
 
   app.submitCreatePortfolio = form => {
-    const data = app.formData(form);
-    api.portfolio.create(data);
+    const data     = app.formData(form);
+    const response = api.portfolio.create(data);
     const dialog = this.root.getElementById('dialogCreatePortfolio');
-    dialog.close();
+    if (response.ok) {
+      dialog.close();
+      document.location.reload();
+    } else {
+      console.error(response);
+    }
   };
-
-
 
 </script>

@@ -1,3 +1,10 @@
+:root {
+  --col-pri-fg: #111;
+  --col-pri-bg: #FFF;
+  --col-sec-fg: #555;
+  --col-sec-bg: #FFF;
+}
+
 * {
   box-sizing : border-box;
 }
@@ -11,15 +18,21 @@ html, body {
   width: 1em;
 }
 ::-webkit-scrollbar-track {
-	background: #FFF;
+	background: var(--col-pri-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #111;
+  background: var(--col-pri-fg);
 }
 
-button, button.outline {
+button, button.outline, [type=submit] {
   cursor: pointer;
-  border: 2px solid #111;
+  border: 2px solid var(--col-pri-fg);
+}
+button:hover, [type=submit]:hover {
+    background: var(--col-sec-fg);
+}
+button:hover, button.outline:hover, [type=submit]:hover {
+  border: 2px solid var(--col-sec-fg);
 }
 
 hr {
@@ -27,7 +40,7 @@ hr {
 }
 
 fieldset {
-  border-color: #111;
+  border-color: var(--col-pri-fg);
   border-style: solid;
 }
 
@@ -57,7 +70,7 @@ dialog::backdrop {
 }
 
 input, select, option, textarea {
-  background: #FFF;
+  background: var(--col-pri-bg);
 }
 
 input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=search]:focus, input[type=number]:focus, input[type=file]:focus, input[type=tel]:focus, select:focus, textarea:focus, textarea[type=text]:focus,
@@ -68,5 +81,5 @@ input[type=text], input[type=password], input[type=email], input[type=search], i
 
 input[type=text]:hover, input[type=password]:hover, input[type=email]:hover, input[type=search]:hover, input[type=number]:hover, input[type=file]:hover, input[type=tel]:hover, select:hover, textarea:hover, textarea[type=text]:hover,
 input[type=text], input[type=password], input[type=email], input[type=search], input[type=number], input[type=file], input[type=tel], select, textarea, textarea[type=text] {
-  border-color: #111;
+  border-color: var(--col-pri-fg);
 }

@@ -3,7 +3,10 @@
     <app-nav></app-nav>
 
     <section class="border padded">
-      Total overview here, basic graph
+      <strong>Total</strong>
+      ${totals.map(total => `
+        <div><strong>${total.currency}</strong> ${total.value.toFixed(2)}</div>
+      `).join('')}
     </section>
 
     <div class="right">
@@ -11,8 +14,13 @@
     </div>
 
     ${portfolios.map(portfolio => `
-      <section class="border padded">
-        ${portfolio.name}
+      <section class="border padded row">
+        <div class="left">
+          <strong>${portfolio.name}</strong> - ${portfolio.value.toFixed(2)} ${portfolio.baseCurrency}
+        </div>
+        <div class="right">
+          <button>Edit</button>
+        </div>
       </section>
     `).join('')}
 
@@ -49,6 +57,13 @@
       </div>
 
       <div class="form-group">
+        <label>Base currency</label>
+        <select name="baseCurrency">
+          <option value="EUR" selected>Euro</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label>Strategy</label>
         <select name="strategy">
           <option value="balance" selected>Balance</option>
@@ -75,6 +90,7 @@
 
   this.state = {
     portfolios: [],
+    totals    : [],
   };
 
   if (!app.state.loggedIn) {
@@ -87,6 +103,17 @@
     await new Promise(r => setTimeout(r,0));
     const {portfolios} = await api.portfolio.list();
     this.state.portfolios = portfolios || [];
+    this.state.totals     = [];
+    portfolios.forEach(portfolio => {
+      let total = this.state.totals.find(t => t.currency == portfolio.baseCurrency) || {
+        currency: portfolio.baseCurrency,
+        value   : 0,
+      }
+      total.value += portfolio.value;
+      if (!~this.state.totals.indexOf(total)) {
+        this.state.totals.push(total);
+      }
+    });
   })();
 
   app.openDialogCreatePortfolio = () => {

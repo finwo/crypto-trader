@@ -17,11 +17,14 @@ module.exports = [
       });
 
       // Remove stuff that shouldn't leak
-      portfolios.forEach((portfolio,i) => {
+      await Promise.all(portfolios.map(async (portfolio,i) => {
         portfolio = portfolio.toJSON();
+        const Exchange = exchanges[portfolio.exchange];
+        const exchange = new Exchange(portfolio);
         delete portfolio.credentials;
         portfolios[i] = portfolio;
-      });
+        portfolio.value = await exchange.getValue();
+      }));
 
       return new app.HttpOk({
         ok: true,

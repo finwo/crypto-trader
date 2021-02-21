@@ -1,5 +1,7 @@
 const bodyParser   = require('body-parser');
 const cors         = require('cors');
+const CronJob      = require('cron').CronJob;
+const exchanges    = require('./lib/exchange');
 const fs           = require('fs');
 const http         = require('http');
 const morgan       = require('morgan');
@@ -7,6 +9,7 @@ const rc4          = require('rc4-crypt');
 const scandir      = require('./lib/scandir');
 const Sequelize    = require('sequelize');
 const serveStatic  = require('serve-static');
+const strategies   = require('./lib/strategy');
 const supercop     = require('supercop');
 
 // Initialize app
@@ -118,8 +121,39 @@ app.regex = {
     console.log(`Listening on :${app.config.port}`);
   });
 
-  // // The fn that actually trades
-  // const trade = async () => {
+  // The fn that actually trades
+  const trade = async () => {
+    let portfolioId = 0;
+    let portfolio   = null;
+
+    // for(;;) {
+
+    //   // Fetch portfolio
+    //   portfolio = await app.db.models.Portfolio.findOne({
+    //     where: {id: {[Sequelize.Op.gt]: portfolioId}},
+    //   });
+    //   if (!portfolio) break;
+    //   portfolioId = portfolio.id;
+
+    //   // Fetch exchange
+    //   if (!(portfolio.exchange in exchanges)) continue;
+    //   const exchange = new exchanges[portfolio.exchange](portfolio);
+
+    //   // Fetch strategy
+
+    //   console.log({portfolio,exchange});
+
+    //   // // Fetch portfolio
+    //   // const portfolio = await app.db.models.Portfolio.findOne({
+    //   //   where: {
+    //   //     id     : req.params.id,
+    //   //     account: req.auth.account.id,
+    //   //   },
+    //   // });
+
+    // }
+
+    
   //   const coinbase = require('./lib/coinbase');
   //   const now      = Date.now();
   //   const data     = {timestamp:now,fee:{},market:{},account:{}};
@@ -212,10 +246,9 @@ app.regex = {
   // 
   //   // Dump large history
   //   while(app.history.length > (app.config.histlen / app.config.interval)) app.history.shift();
-  // };
+  };
 
-  // // Kick-start trading
-  // trade();
-  // setInterval(trade, app.config.interval);
-
+  // Kick-start trading
+  const job = new CronJob('0 * * * * *', trade);
+  job.start();
 })();

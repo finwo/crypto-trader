@@ -9,5 +9,6 @@ module.exports = sequelize => {
     exchange     : DataTypes.STRING,
     strategy     : DataTypes.STRING,
     credentials  : DataTypes.STRING(1024),
+    markets      : DataTypes.STRING(4096),
   }, { sequelize, tableName: 'portfolio' })
 };

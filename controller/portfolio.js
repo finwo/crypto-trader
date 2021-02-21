@@ -3,6 +3,82 @@ const exchanges = require('../lib/exchange');
 module.exports = [
 
   {
+    method: 'put',
+    path  : '/api/portfolio/:id',
+    name  : 'portfolio.update',
+    async handler(req, res) {
+      if (!req.auth.ok) return new app.HttpUnauthorized({ok:false,message:'Authentication required'});
+
+      // Fetch portfolio
+      const portfolio = await app.db.models.Portfolio.findOne({
+        where: {
+          id     : req.params.id,
+          account: req.auth.account.id,
+        },
+      });
+
+      if (!portfolio) {
+        return new app.HttpNotFound({
+          ok     : false,
+          message: 'Portfolio not found',
+        });
+      }
+
+      // Merge credentials
+      const credentials = JSON.parse(portfolio.credentials);
+      for(const key in req.body.credentials) {
+        credentials[key] = req.body.credentials[key] || credentials[key];
+      }
+      portfolio.credentials = JSON.stringify(credentials);
+
+      // Merge new data
+      for(const key in req.body) {
+        if (~['credentials','id'].indexOf(key)) continue;
+        portfolio[key] = req.body[key] || portfolio[key];
+      }
+
+      // Save and be done
+      await portfolio.save();
+
+      return new app.HttpOk({
+        ok: true,
+      });
+    },
+  },
+
+  {
+    method: 'delete',
+    path  : '/api/portfolio/:id',
+    name  : 'portfolio.delete',
+    async handler(req, res) {
+      if (!req.auth.ok) return new app.HttpUnauthorized({ok:false,message:'Authentication required'});
+
+      // Fetch portfolio
+      const portfolio = await app.db.models.Portfolio.findOne({
+        where: {
+          id     : req.params.id,
+          account: req.auth.account.id,
+        },
+      });
+
+      // Handle not-found
+      if (!portfolio) {
+        return new app.HttpNotFound({
+          ok     : false,
+          message: 'Portfolio not found',
+        });
+      }
+
+      // Delete the portfolio
+      await portfolio.destroy();
+
+      return new app.HttpOk({
+        ok: true,
+      });
+    },
+  },
+
+  {
     method: 'get',
     path  : '/api/portfolio',
     name  : 'portfolio.list',
@@ -44,6 +120,7 @@ module.exports = [
         ...req.body,
         account: req.auth.account.id,
       };
+      delete data.id;
 
       // Basic validation
       if (!data.name) return new app.HttpBadRequest({ok:false,field:'name',message:'Name Missing'});

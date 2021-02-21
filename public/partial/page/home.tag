@@ -10,24 +10,26 @@
     </section>
 
     <div class="right">
-      <button onclick="app.openDialogCreatePortfolio();return false;">Add portfolio</button>
+      <button onclick="app.openDialogPortfolio();return false;">Add portfolio</button>
     </div>
 
-    ${portfolios.map(portfolio => `
+    ${portfolios.map((portfolio,i) => `
       <section class="border padded row">
         <div class="left">
-          <strong>${portfolio.name}</strong> - ${portfolio.value.toFixed(2)} ${portfolio.baseCurrency}
+          <strong>${portfolio.name}</strong>: ${parseFloat(portfolio.value).toFixed(2)} ${portfolio.baseCurrency}
         </div>
         <div class="right">
-          <button>Edit</button>
+          <button onclick="app.deletePortfolio(${i});return false;">Delete</button>
+          <button onclick="app.openDialogPortfolio(${i});return false;" class="outline">Edit</button>
         </div>
       </section>
     `).join('')}
 
   </div>
 
-  <dialog id="dialogCreatePortfolio">
-    <form onsubmit="app.submitCreatePortfolio(this);return false;">
+  <dialog id="dialogPortfolio">
+    <form onsubmit="app.submitPortfolio(this);return false;">
+      <input name="id" class="hidden" value="-1">
 
       <div class="form-group">
         <label>Name</label>
@@ -36,7 +38,7 @@
 
       <div class="form-group">
         <label>Exchange</label>
-        <select name="exchange" onchange="app.updateCreatePortfolioExchange(this);">
+        <select name="exchange" onchange="app.updatePortfolioDynamic(this);" value="coinbase">
           <option value="coinbase" selected>Coinbase</option>
         </select>
       </div>
@@ -58,14 +60,14 @@
 
       <div class="form-group">
         <label>Base currency</label>
-        <select name="baseCurrency">
+        <select name="baseCurrency" value="EUR">
           <option value="EUR" selected>Euro</option>
         </select>
       </div>
 
       <div class="form-group">
         <label>Strategy</label>
-        <select name="strategy">
+        <select name="strategy" onchange="app.updatePortfolioDynamic(this);" value="balance">
           <option value="balance" selected>Balance</option>
         </select>
       </div>
@@ -105,6 +107,7 @@
     this.state.portfolios = portfolios || [];
     this.state.totals     = [];
     portfolios.forEach(portfolio => {
+      portfolio.credentials = portfolio.credentials || {};
       let total = this.state.totals.find(t => t.currency == portfolio.baseCurrency) || {
         currency: portfolio.baseCurrency,
         value   : 0,
@@ -116,10 +119,34 @@
     });
   })();
 
-  app.openDialogCreatePortfolio = () => {
-    const dialog = this.root.getElementById('dialogCreatePortfolio');
+  app.openDialogPortfolio = async (index = -1) => {
+    let   dialog = this.root.getElementById('dialogPortfolio');
+    const inputs = [...dialog.querySelectorAll('[name]')];
+    if (index == -1) {
+      for (const el of inputs) {
+        el.value = el.getAttribute('value') || '';
+      }
+    } else {
+      const portfolio = this.state.portfolios[index];
+      for (const el of inputs) {
+        const path = el.getAttribute('name').split('.');
+        const last = path.pop();
+        let   ref  = portfolio;
+        while(path.length) {
+          const key = path.shift();
+          ref = ref[key] = ref[key] || {};
+        }
+        console.log({path,last,ref});
+        if ('undefined' === typeof ref[last]) {
+          continue;
+        }
+        el.value = ref[last];
+      }
+    }
+    await new Promise(r => setTimeout(r,0));
+    dialog = this.root.getElementById('dialogPortfolio');
     dialog.showModal();
-    app.updateCreatePortfolioExchange(
+    app.updatePortfolioDynamic(
       dialog.querySelector('[name=exchange]')
     );
   };
@@ -130,23 +157,50 @@
     el.close();
   };
 
-  app.updateCreatePortfolioExchange = select => {
-    const dialog = this.root.getElementById('dialogCreatePortfolio');
-    app.addClass(dialog.querySelectorAll('[exchange]'), 'hidden');
-    app.removeClass(dialog.querySelectorAll('[exchange='+(select.value)+']'), 'hidden');
-    console.log({select});
+  app.updatePortfolioDynamic = form => {
+    while(form.tagName !== 'FORM') form = form.parentElement;
+    [...form.querySelectorAll('[name]')].forEach(input => {
+      const prop = input.getAttribute('name').replace(/\./g,'-');
+      if (~['id','name'].indexOf(prop)) return;
+      if (!input.value) return;
+      if (!isNaN(input.value)) return;
+      app.addClass(form.querySelectorAll(`[${prop}]`),'hidden');
+      app.removeClass(form.querySelectorAll(`[${prop}=${input.value}]`),'hidden');
+    });
   };
 
-  app.submitCreatePortfolio = form => {
-    const data     = app.formData(form);
-    const response = api.portfolio.create(data);
-    const dialog = this.root.getElementById('dialogCreatePortfolio');
+  app.submitPortfolio = async form => {
+    const data = app.formData(form);
+    const id   = parseInt(data.id);
+    console.log({id});
+
+    let response;
+    if (id < 0) {
+      delete data.id;
+      response = await api.portfolio.create(data);
+    } else {
+      response = await api.portfolio.update(data);
+    }
+
+    const dialog = this.root.getElementById('dialogPortfolio');
     if (response.ok) {
       dialog.close();
       document.location.reload();
     } else {
       console.error(response);
     }
+  };
+
+  app.deletePortfolio = async index => {
+    const portfolio = this.state.portfolios[index];
+    if (!confirm(`Are you sure you want to delete your "${portfolio.name}" portfolio`)) {
+      return;
+    }
+    const response = await api.portfolio.delete({id:portfolio.id});
+    if (response.message) {
+      // TODO: show error
+    }
+    document.location.reload();
   };
 
 </script>

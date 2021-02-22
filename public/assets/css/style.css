@@ -1,0 +1,87 @@
+:root {
+  --col-pri-fg: #111;
+  --col-pri-bg: #FFF;
+  --col-sec-fg: #555;
+  --col-sec-bg: #FFF;
+}
+
+* {
+  box-sizing : border-box;
+  font-family: inherit;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: monospace;
+}
+
+::-webkit-scrollbar {
+  width: 1em;
+}
+::-webkit-scrollbar-track {
+	background: var(--col-pri-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--col-pri-fg);
+}
+
+button, button.outline, [type=submit] {
+  cursor: pointer;
+  border: 2px solid var(--col-pri-fg);
+}
+button:hover, [type=submit]:hover {
+    background: var(--col-sec-fg);
+}
+button:hover, button.outline:hover, [type=submit]:hover {
+  border: 2px solid var(--col-sec-fg);
+}
+
+hr {
+  border-style: solid;
+}
+
+fieldset {
+  border-color: var(--col-pri-fg);
+  border-style: solid;
+}
+
+legend {
+  padding-inline-start: 0.5em;
+  padding-inline-end: 0.5em;
+}
+
+section + section {
+  margin-top: 1em;
+}
+
+.border {
+  border-style: solid;
+}
+
+dialog::backdrop {
+  background: #1115;
+}
+
+.padded {
+  padding: 1em;
+}
+
+.hidden {
+  display: none;
+}
+
+input, select, option, textarea {
+  background: var(--col-pri-bg);
+}
+
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=search]:focus, input[type=number]:focus, input[type=file]:focus, input[type=tel]:focus, select:focus, textarea:focus, textarea[type=text]:focus,
+input[type=text]:hover, input[type=password]:hover, input[type=email]:hover, input[type=search]:hover, input[type=number]:hover, input[type=file]:hover, input[type=tel]:hover, select:hover, textarea:hover, textarea[type=text]:hover,
+input[type=text], input[type=password], input[type=email], input[type=search], input[type=number], input[type=file], input[type=tel], select, textarea, textarea[type=text] {
+  border-width: 2px;
+}
+
+input[type=text]:hover, input[type=password]:hover, input[type=email]:hover, input[type=search]:hover, input[type=number]:hover, input[type=file]:hover, input[type=tel]:hover, select:hover, textarea:hover, textarea[type=text]:hover,
+input[type=text], input[type=password], input[type=email], input[type=search], input[type=number], input[type=file], input[type=tel], select, textarea, textarea[type=text] {
+  border-color: var(--col-pri-fg);
+}

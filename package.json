@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild public/main.js --bundle --minify --outfile=public/app.js",
+    "build": "esbuild public/_init.js --bundle --outfile=public/init.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,16 +18,24 @@
   },
   "homepage": "https://github.com/finwo/coinbase-trader#readme",
   "dependencies": {
+    "big.js": "^6.0.3",
     "body-parser": "^1.19.0",
+    "buffer": "^6.0.3",
     "cors": "^2.8.5",
+    "cron": "^1.8.2",
     "esbuild": "^0.8.37",
     "finalhandler": "^1.1.2",
+    "fwebc": "^0.10.0",
     "morgan": "^1.10.0",
+    "mysql2": "^2.2.5",
     "node-fetch": "^2.6.1",
     "qs": "^6.9.6",
     "rc": "^1.2.8",
+    "rc4-crypt": "^1.0.3",
     "router": "^1.3.5",
+    "sequelize": "^6.5.0",
     "serve-static": "^1.14.1",
-    "smoothie": "^1.35.0"
+    "supercop": "^2.2.1",
+    "wingcss": "^1.0.0-beta"
   }
 }

@@ -135,39 +135,6 @@ module.exports = [
         credentials: JSON.stringify(data.credentials),
       });
 
-      console.log({portfolio});
-
-      // // Create new account
-      // const account = await app.db.models.Account.create({
-      //   email : req.body.email,
-      //   pubkey: req.body.pubkey,
-      // });
-
-      // // Generate authentication token data
-      // const auth_time   = Math.floor(Date.now()/1000);
-      // const auth_header = b64.encode(JSON.stringify({alg: 'ed25519'}));
-      // const auth_body   = b64.encode(JSON.stringify({
-      //   iss: 'finwo',
-      //   iat: auth_time,
-      //   exp: auth_time + app.config.authlen,
-      //   sub: account.id,
-      // }));
-
-      // // Sign & return the token
-      // const auth_signature = b64.encode(await app.keypair.sign([auth_header,auth_body].join('.')));
-      // return new app.HttpOk({
-      //   ok   : true,
-      //   acc  : account.id,
-      //   token: [auth_header,auth_body,auth_signature].join('.'),
-      // });
-
-
-
-
-
-
-
-
       return new app.HttpOk({ok:true});
     },
   },

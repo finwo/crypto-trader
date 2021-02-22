@@ -65,7 +65,6 @@ module.exports = [
       if ('string' !== typeof req.body.pubkey) return new app.HttpBadRequest({ok:false,field:'pubkey',message:'Public key is invalid'});
       if ('string' !== typeof req.body.signature) return new app.HttpBadRequest({ok:false,field:'signature',message:'Signature is invalid'});
       if (!app.regex.email.test(req.body.email)) return new app.HttpBadRequest({ok:false,field:'email',message:'Email is invalid'});
-      // if (req.body.password.length < 8) return new app.HttpBadRequest({ok:false,field:'password',message:'Password should be equal or longer than 8 characters'});
 
       // Validate signature
       const pubkey    = Buffer.from(req.body.pubkey   , 'base64');

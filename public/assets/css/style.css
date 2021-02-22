@@ -7,11 +7,13 @@
 
 * {
   box-sizing : border-box;
+  font-family: inherit;
 }
 
 html, body {
   margin: 0;
   padding: 0;
+  font-family: monospace;
 }
 
 ::-webkit-scrollbar {

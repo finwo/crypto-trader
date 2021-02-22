@@ -47,7 +47,11 @@
           ref[lastkey] = !!el.checked;
           break;
         default:
-          ref[lastkey] = el.value;
+          if ((el.tagName == 'SELECT') && el.hasAttribute('multiple')) {
+            ref[lastkey] = [...el.selectedOptions].map(option => option.value);
+          } else {
+            ref[lastkey] = el.value;
+          }
           break;
       }
       return r;

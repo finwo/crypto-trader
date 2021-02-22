@@ -72,10 +72,17 @@
         </select>
       </div>
 
+      <div class="form-group">
+        <label>Markets</label>
+        <select name="markets" multiple>
+        </select>
+      </div>
+
       <div class="form-group" strategy="balance">
         <label>Trade gap &percnt;</label>
         <input name="tradegap" type="number" step="0.1" min="0.1" value="2">
       </div>
+
 
       <button class="outline" onclick="app.closeDialog(this);return false;">Cancel</button>
       <button>Submit</button>
@@ -106,8 +113,9 @@
     const {portfolios} = await api.portfolio.list();
     this.state.portfolios = portfolios || [];
     this.state.totals     = [];
-    portfolios.forEach(portfolio => {
+    await portfolios.map(async portfolio => {
       portfolio.credentials = portfolio.credentials || {};
+      portfolio.markets     = portfolio.markets.split(',');
       let total = this.state.totals.find(t => t.currency == portfolio.baseCurrency) || {
         currency: portfolio.baseCurrency,
         value   : 0,
@@ -122,6 +130,8 @@
   app.openDialogPortfolio = async (index = -1) => {
     let   dialog = this.root.getElementById('dialogPortfolio');
     const inputs = [...dialog.querySelectorAll('[name]')];
+    const marketSelect = dialog.querySelector('[name=markets]');
+    while(marketSelect.children.length) marketSelect.removeChild(marketSelect.children[0]);
     if (index == -1) {
       for (const el of inputs) {
         el.value = el.getAttribute('value') || '';
@@ -136,11 +146,19 @@
           const key = path.shift();
           ref = ref[key] = ref[key] || {};
         }
-        console.log({path,last,ref});
         if ('undefined' === typeof ref[last]) {
           continue;
         }
         el.value = ref[last];
+      }
+      for(const market of portfolio.allMarkets) {
+        const marketOption     = document.createElement('OPTION');
+        marketOption.value     = market.id;
+        marketOption.innerText = market.id;
+        if (~portfolio.markets.indexOf(market.id)) {
+          marketOption.setAttribute('selected',true);
+        }
+        marketSelect.appendChild(marketOption);
       }
     }
     await new Promise(r => setTimeout(r,0));
@@ -170,9 +188,9 @@
   };
 
   app.submitPortfolio = async form => {
-    const data = app.formData(form);
-    const id   = parseInt(data.id);
-    console.log({id});
+    const data   = app.formData(form);
+    const id     = parseInt(data.id);
+    data.markets = data.markets.join(',');
 
     let response;
     if (id < 0) {

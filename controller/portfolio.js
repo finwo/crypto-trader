@@ -194,24 +194,12 @@ module.exports = [
         delete portfolio.credentials;
         portfolios[i] = portfolio;
         portfolio.value   = await exchange.getValue();
-        portfolio.markets = (await exchange.getMarkets()).filter(market => market.quote == portfolio.baseCurrency);
+        portfolio.allMarkets = (await exchange.getMarkets()).filter(market => market.quote == portfolio.baseCurrency);
       }));
 
       return new app.HttpOk({
         ok: true,
         portfolios,
-      });
-    },
-  },
-
-  {
-    method: 'get',
-    path  : '/api/portfolio/:id',
-    name  : 'portfolio.get',
-    async handler(req, res) {
-      return new app.HttpBadRequest({
-        ok: false,
-        message: 'Method not implemented yet',
       });
     },
   },

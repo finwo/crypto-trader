@@ -126,126 +126,26 @@ app.regex = {
     let portfolioId = 0;
     let portfolio   = null;
 
-    // for(;;) {
+    for(;;) {
 
-    //   // Fetch portfolio
-    //   portfolio = await app.db.models.Portfolio.findOne({
-    //     where: {id: {[Sequelize.Op.gt]: portfolioId}},
-    //   });
-    //   if (!portfolio) break;
-    //   portfolioId = portfolio.id;
+      // Fetch portfolio
+      portfolio = await app.db.models.Portfolio.findOne({
+        where: {id: {[Sequelize.Op.gt]: portfolioId}},
+      });
+      if (!portfolio) break;
+      portfolioId = portfolio.id;
 
-    //   // Fetch exchange
-    //   if (!(portfolio.exchange in exchanges)) continue;
-    //   const exchange = new exchanges[portfolio.exchange](portfolio);
+      // Fetch exchange
+      if (!(portfolio.exchange in exchanges)) continue;
+      const exchange = new exchanges[portfolio.exchange](portfolio);
 
-    //   // Fetch strategy
+      // Fetch strategy
+      if (!(portfolio.strategy in strategies)) continue;
+      const strategy = strategies[portfolio.strategy];
 
-    //   console.log({portfolio,exchange});
-
-    //   // // Fetch portfolio
-    //   // const portfolio = await app.db.models.Portfolio.findOne({
-    //   //   where: {
-    //   //     id     : req.params.id,
-    //   //     account: req.auth.account.id,
-    //   //   },
-    //   // });
-
-    // }
-
-    
-  //   const coinbase = require('./lib/coinbase');
-  //   const now      = Date.now();
-  //   const data     = {timestamp:now,fee:{},market:{},account:{}};
-  //   app.history.push(data);
-  // 
-  //   // Fetch fees
-  //   const feedata = await coinbase.getFees();
-  //   data.fee.make = parseFloat(feedata.maker_fee_rate);
-  //   data.fee.take = parseFloat(feedata.taker_fee_rate);
-  // 
-  //   // Fetch current markets
-  //   await Promise.all(app.config.markets.map(async market => {
-  //     const marketId = `${market.alt}-${market.base}`;
-  //     data.account[market.alt]  = {balance:0,hold:0,available:0,value:0};
-  //     data.account[market.base] = {balance:0,hold:0,available:0,value:0};
-  //     data.market[marketId]     = await coinbase.getMarket(marketId);
-  //   }));
-  // 
-  //   // Fetch accounts
-  //   (await coinbase.getAccounts())
-  //     .filter(account => {
-  //       account.balance   = parseFloat(account.balance);
-  //       account.hold      = parseFloat(account.hold);
-  //       account.available = parseFloat(account.available);
-  //       account.value     = (data.market[`${account.currency}-${app.config.marketBase}`] || 1) * account.available;
-  //       if (account.currency == app.config.marketBase) {
-  //         account.value /= app.config.markets.length;
-  //       }
-  //       return account.available > 0.001;
-  //     })
-  //     .forEach(account => {
-  //       data.account[account.currency] = account;
-  //       delete account.balance;
-  //       delete account.currency;
-  //       delete account.hold;
-  //       delete account.id;
-  //       delete account.proile_id;
-  //       delete account.trading_enabled;
-  //     });
-  // 
-  //   // Balance out value
-  //   for(const market of app.config.markets) {
-  //     const marketId = `${market.alt}-${market.base}`;
-  // 
-  //     // No market info = skip
-  //     if (!data.market[marketId]) continue;
-  // 
-  //     // Start preparing order
-  //     const diff  = Math.abs(data.account[market.alt].value - data.account[market.base].value);
-  //     const order = {
-  //       product_id: marketId,
-  //       side      : data.account[market.alt].value > data.account[market.base].value ? 'sell' : 'buy',
-  //       type      : 'market',
-  //       size      : diff / (1+(1/app.config.markets.length)) / data.market[marketId],
-  //     };
-  // 
-  //     // Fix roundings according to market
-  //     order.size = Math.round(order.size * Math.pow(10,market.precision)) / Math.pow(10,market.precision);
-  // 
-  //     // Bail if the order is too small
-  //     const bandstop = data.account[market.alt].available * ((data.fee.take * 2) + app.config.margin)
-  //     if (order.size < Math.pow(10,0 - market.minimum)) continue;
-  //     if (order.size < bandstop) continue;
-  // 
-  //     // Execute order
-  //     const res = await coinbase.postOrder(order);
-  //     const msg = {order};
-  //     if (res.message) msg.message = res.message;
-  //     console.log(msg);
-  // 
-  //     if (res.message) {
-  //       console.log(17, res.message.substr(0,17), res.message.substr(0,17) == 'size is too small');
-  //       console.log(20, res.message.substr(0,20), res.message.substr(0,20) == 'size is too accurate');
-  //     }
-  // 
-  //     // Adjust precision
-  //     if (res.message && (res.message.substr(0,20) == 'size is too accurate')) {
-  //       market.precision -= 1;
-  //       continue;
-  //     }
-  // 
-  //     // Adjust minimum
-  //     if (res.message && (res.message.substr(0,17) == 'size is too small')) {
-  //       market.minimum -= 1;
-  //       continue;
-  //     }
-  // 
-  //     return;
-  //   }
-  // 
-  //   // Dump large history
-  //   while(app.history.length > (app.config.histlen / app.config.interval)) app.history.shift();
+      // TRADE!
+      await strategy(portfolio, exchange);
+    }
   };
 
   // Kick-start trading

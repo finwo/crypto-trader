@@ -8,6 +8,7 @@ module.exports = sequelize => {
     baseCurrency : DataTypes.STRING,
     exchange     : DataTypes.STRING,
     strategy     : DataTypes.STRING,
+    tradegap     : DataTypes.DOUBLE,
     credentials  : DataTypes.STRING(1024),
     markets      : DataTypes.STRING(4096),
   }, { sequelize, tableName: 'portfolio' })

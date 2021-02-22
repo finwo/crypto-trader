@@ -144,7 +144,7 @@ app.regex = {
       const strategy = strategies[portfolio.strategy];
 
       // TRADE!
-      strategy(portfolio, exchange);
+      await strategy(portfolio, exchange);
     }
   };
 

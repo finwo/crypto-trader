@@ -26,6 +26,7 @@
     "esbuild": "^0.8.37",
     "finalhandler": "^1.1.2",
     "fwebc": "^0.10.0",
+    "mathjs": "^9.2.0",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
     "node-fetch": "^2.6.1",

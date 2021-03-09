@@ -139,9 +139,22 @@ app.regex = {
       if (!(portfolio.exchange in exchanges)) continue;
       const exchange = new exchanges[portfolio.exchange](portfolio);
 
+      // 2020-03-09 data transform
+      try {
+        portfolio.strategy = JSON.parse(portfolio.strategy);
+      } catch(e) {
+        portfolio.strategy = JSON.stringify({
+          name     : portfolio.strategy,
+          markets  : portfolio.markets.split(',').filter(e => e),
+          tradegap : portfolio.tradegap,
+        });
+        await portfolio.save();
+        portfolio.strategy = JSON.parse(portfolio.strategy);
+      }
+
       // Fetch strategy
-      if (!(portfolio.strategy in strategies)) continue;
-      const strategy = strategies[portfolio.strategy];
+      if (!(portfolio.strategy.name in strategies)) continue;
+      const strategy = strategies[portfolio.strategy.name];
 
       // TRADE!
       await strategy(portfolio, exchange);

@@ -26,7 +26,9 @@ module.exports = [
 
       // Merge credentials
       const credentials = JSON.parse(portfolio.credentials);
-      Object.assign(credentials,req.body.credentials);
+      for(const key in credentials) {
+        credentials[key] = req.body.credentials[key] || credentials[key];
+      }
       portfolio.credentials = JSON.stringify(credentials);
 
       // Merge strategy

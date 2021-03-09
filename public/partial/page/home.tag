@@ -191,7 +191,6 @@
   app.submitPortfolio = async form => {
     const data   = app.formData(form);
     const id     = parseInt(data.id);
-    /* data.markets = data.markets.join(','); */
 
     console.log("DATA", data);
 

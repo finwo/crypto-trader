@@ -26,14 +26,17 @@ module.exports = [
 
       // Merge credentials
       const credentials = JSON.parse(portfolio.credentials);
-      for(const key in req.body.credentials) {
-        credentials[key] = req.body.credentials[key] || credentials[key];
-      }
+      Object.assign(credentials,req.body.credentials);
       portfolio.credentials = JSON.stringify(credentials);
+
+      // Merge strategy
+      const strategy = JSON.parse(portfolio.strategy);
+      Object.assign(strategy,req.body.strategy);
+      portfolio.strategy = JSON.stringify(strategy);
 
       // Merge new data
       for(const key in req.body) {
-        if (~['credentials','id'].indexOf(key)) continue;
+        if (~['credentials','strategy','id'].indexOf(key)) continue;
         portfolio[key] = req.body[key] || portfolio[key];
       }
 
@@ -153,15 +156,17 @@ module.exports = [
         },
       });
 
-      // Remove stuff that shouldn't leak
+      // Remove stuff that shouldn't leak & calculate value
       await Promise.all(portfolios.map(async (portfolio,i) => {
         portfolio = portfolio.toJSON();
         const Exchange = exchanges[portfolio.exchange];
         const exchange = new Exchange(portfolio);
         delete portfolio.credentials;
-        portfolios[i] = portfolio;
-        portfolio.value   = await exchange.getValue();
+        portfolios[i]        = portfolio;
+        portfolio.value      = await exchange.getValue();
         portfolio.allMarkets = (await exchange.getMarkets()).filter(market => market.quote == portfolio.baseCurrency);
+        portfolio.strategy   = JSON.parse(portfolio.strategy);
+        portfolio.allMarkets.sort((a,b) => a.id > b.id ? 1 : (a.id < b.id ? -1 : 0));
       }));
 
       return new app.HttpOk({

@@ -67,20 +67,20 @@
 
       <div class="form-group">
         <label>Strategy</label>
-        <select name="strategy" onchange="app.updatePortfolioDynamic(this);" value="balance">
+        <select name="strategy.name" onchange="app.updatePortfolioDynamic(this);" value="balance">
           <option value="balance" selected>Balance</option>
         </select>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" strategy-name="balance">
         <label>Markets</label>
-        <select name="markets" multiple>
+        <select name="strategy.markets" multiple>
         </select>
       </div>
 
-      <div class="form-group" strategy="balance">
+      <div class="form-group" strategy-name="balance">
         <label>Trade gap &percnt;</label>
-        <input name="tradegap" type="number" step="0.1" min="0.1" value="2">
+        <input name="strategy.tradegap" type="number" step="0.1" min="0.1" value="2">
       </div>
 
 
@@ -130,8 +130,8 @@
   app.openDialogPortfolio = async (index = -1) => {
     let   dialog = this.root.getElementById('dialogPortfolio');
     const inputs = [...dialog.querySelectorAll('[name]')];
-    const marketSelect = dialog.querySelector('[name=markets]');
-    while(marketSelect.children.length) marketSelect.removeChild(marketSelect.children[0]);
+    const marketSelect = dialog.querySelector('[name="strategy.markets"]');
+    [...marketSelect.children].forEach(el => marketSelect.removeChild(el));
     if (index == -1) {
       for (const el of inputs) {
         el.value = el.getAttribute('value') || '';
@@ -151,11 +151,12 @@
         }
         el.value = ref[last];
       }
+
       for(const market of portfolio.allMarkets) {
         const marketOption     = document.createElement('OPTION');
         marketOption.value     = market.id;
         marketOption.innerText = market.id;
-        if (~portfolio.markets.indexOf(market.id)) {
+        if (~portfolio.strategy.markets.indexOf(market.id)) {
           marketOption.setAttribute('selected',true);
         }
         marketSelect.appendChild(marketOption);
@@ -190,23 +191,25 @@
   app.submitPortfolio = async form => {
     const data   = app.formData(form);
     const id     = parseInt(data.id);
-    data.markets = data.markets.join(',');
+    /* data.markets = data.markets.join(','); */
 
-    let response;
-    if (id < 0) {
-      delete data.id;
-      response = await api.portfolio.create(data);
-    } else {
-      response = await api.portfolio.update(data);
-    }
+    console.log("DATA", data);
 
-    const dialog = this.root.getElementById('dialogPortfolio');
-    if (response.ok) {
-      dialog.close();
-      document.location.reload();
-    } else {
-      console.error(response);
-    }
+    /* let response; */
+    /* if (id < 0) { */
+    /*   delete data.id; */
+    /*   response = await api.portfolio.create(data); */
+    /* } else { */
+    /*   response = await api.portfolio.update(data); */
+    /* } */
+
+    /* const dialog = this.root.getElementById('dialogPortfolio'); */
+    /* if (response.ok) { */
+    /*   dialog.close(); */
+    /*   document.location.reload(); */
+    /* } else { */
+    /*   console.error(response); */
+    /* } */
   };
 
   app.deletePortfolio = async index => {

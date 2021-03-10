@@ -192,23 +192,21 @@
     const data   = app.formData(form);
     const id     = parseInt(data.id);
 
-    console.log("DATA", data);
+    let response;
+    if (id < 0) {
+      delete data.id;
+      response = await api.portfolio.create(data);
+    } else {
+      response = await api.portfolio.update(data);
+    }
 
-    /* let response; */
-    /* if (id < 0) { */
-    /*   delete data.id; */
-    /*   response = await api.portfolio.create(data); */
-    /* } else { */
-    /*   response = await api.portfolio.update(data); */
-    /* } */
-
-    /* const dialog = this.root.getElementById('dialogPortfolio'); */
-    /* if (response.ok) { */
-    /*   dialog.close(); */
-    /*   document.location.reload(); */
-    /* } else { */
-    /*   console.error(response); */
-    /* } */
+    const dialog = this.root.getElementById('dialogPortfolio');
+    if (response.ok) {
+      dialog.close();
+      document.location.reload();
+    } else {
+      console.error(response);
+    }
   };
 
   app.deletePortfolio = async index => {

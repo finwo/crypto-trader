@@ -90,55 +90,54 @@ module.exports = [
     async handler(req, res) {
       if (!req.auth.ok) return new app.HttpUnauthorized({ok:false,message:'Authentication required'});
 
-      const data = {
-        ...req.body,
-        account: req.auth.account.id,
-      };
-      delete data.id;
+      // const data = {
+      //   ...req.body,
+      //   account: req.auth.account.id,
+      // };
+      // delete data.id;
 
-      // Basic validation
-      if (!data.name) return new app.HttpBadRequest({ok:false,field:'name',message:'Name Missing'});
-      if (!data.exchange) return new app.HttpBadRequest({ok:false,field:'exchange',message:'Exchange Missing'});
-      if (!data.credentials) return new app.HttpBadRequest({ok:false,message:'Credentials Missing'});
-      if (!data.strategy) return new app.HttpBadRequest({ok:false,field:'strategy',message:'Strategy Missing'});
-      if ('string' !== typeof data.name) return new app.HttpBadRequest({ok:false,field:'name',message:'Invalid Name'});
-      if ('string' !== typeof data.exchange) return new app.HttpBadRequest({ok:false,field:'exchange',message:'Invalid Exchange'});
-      if ('object' !== typeof data.credentials) return new app.HttpBadRequest({ok:false,field:'credentials',message:'Invalid Credentials'});
-      if ('string' !== typeof data.strategy) return new app.HttpBadRequest({ok:false,field:'strategy',message:'Invalid Strategy'});
+      // // Basic validation
+      // if (!data.name) return new app.HttpBadRequest({ok:false,field:'name',message:'Name Missing'});
+      // if (!data.exchange) return new app.HttpBadRequest({ok:false,field:'exchange',message:'Exchange Missing'});
+      // if (!data.credentials) return new app.HttpBadRequest({ok:false,message:'Credentials Missing'});
+      // if (!data.strategy) return new app.HttpBadRequest({ok:false,field:'strategy',message:'Strategy Missing'});
+      // if ('string' !== typeof data.name) return new app.HttpBadRequest({ok:false,field:'name',message:'Invalid Name'});
+      // if ('string' !== typeof data.exchange) return new app.HttpBadRequest({ok:false,field:'exchange',message:'Invalid Exchange'});
+      // if ('object' !== typeof data.credentials) return new app.HttpBadRequest({ok:false,field:'credentials',message:'Invalid Credentials'});
+      // if ('string' !== typeof data.strategy) return new app.HttpBadRequest({ok:false,field:'strategy',message:'Invalid Strategy'});
 
-      console.log({data});
+      // // Strategy validation
+      // switch(data.strategy) {
+      //   case 'balance':
+      //     if (!data.tradegap) return new app.HttpBadRequest({ok:false,field:'tradegap',message:'Tradegap Missing'});
+      //     if (isNaN(data.tradegap)) return new app.HttpBadRequest({ok:false,field:'tradegap',message:'Invalid Tradegap'});
+      //     data.tradegap = parseFloat(data.tradegap);
+      //     break;
+      //   default:
+      //     return new app.HttpBadRequest({ok:false,field:'strategy',message:'Invalid Strategy'});
+      // }
 
-      // Strategy validation
-      switch(data.strategy) {
-        case 'balance':
-          if (!data.tradegap) return new app.HttpBadRequest({ok:false,field:'tradegap',message:'Tradegap Missing'});
-          if (isNaN(data.tradegap)) return new app.HttpBadRequest({ok:false,field:'tradegap',message:'Invalid Tradegap'});
-          data.tradegap = parseFloat(data.tradegap);
-          break;
-        default:
-          return new app.HttpBadRequest({ok:false,field:'strategy',message:'Invalid Strategy'});
-      }
+      // // Exchange validation
+      // if (!(data.exchange in exchanges)) {
+      //   return new app.HttpBadRequest({ok:false,field:'exchange',message:'Invalid Exchange'});
+      // }
 
-      // Exchange validation
-      if (!(data.exchange in exchanges)) {
-        return new app.HttpBadRequest({ok:false,field:'exchange',message:'Invalid Exchange'});
-      }
+      // // Validation by exchange
+      // const exchange = exchanges[data.exchange];
+      // const exchangeReject = await exchange.validatePortfolio(data);
+      // if (exchangeReject) {
+      //   return new app.HttpBadRequest({
+      //     ok     : false,
+      //     message: exchangeReject,
+      //   });
+      // }
 
-      // Validation by exchange
-      const exchange = exchanges[data.exchange];
-      const exchangeReject = await exchange.validatePortfolio(data);
-      if (exchangeReject) {
-        return new app.HttpBadRequest({
-          ok     : false,
-          message: exchangeReject,
-        });
-      }
-
-      // All checks passed, will create the portfolio
-      const portfolio = await app.db.models.Portfolio.create({
-        ...data,
-        credentials: JSON.stringify(data.credentials),
-      });
+      // // All checks passed, will create the portfolio
+      // const portfolio = await app.db.models.Portfolio.create({
+      //   ...data,
+      //   credentials: JSON.stringify(data.credentials),
+      //   strategy   : JSON.stringify(data.strategy),
+      // });
 
       return new app.HttpOk({ok:true});
     },

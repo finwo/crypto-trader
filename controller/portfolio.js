@@ -165,9 +165,10 @@ module.exports = [
         portfolio = portfolio.toJSON();
         const Exchange = exchanges[portfolio.exchange];
         const exchange = new Exchange(portfolio);
+        const accounts = await exchange.getAccounts();
         delete portfolio.credentials;
         portfolios[i]        = portfolio;
-        portfolio.value      = await exchange.getValue();
+        portfolio.value      = await exchange.getValue(accounts);
         portfolio.allMarkets = (await exchange.getMarkets()).filter(market => market.quote == portfolio.baseCurrency);
         portfolio.strategy   = JSON.parse(portfolio.strategy);
         portfolio.allMarkets.sort((a,b) => a.id > b.id ? 1 : (a.id < b.id ? -1 : 0));

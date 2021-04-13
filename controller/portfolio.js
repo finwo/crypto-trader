@@ -109,7 +109,7 @@ module.exports = [
       if ('name'   !== typeof data.strategy.name) return new app.HttpBadRequest({ok:false,field:'strategy',message:'Invalid Strategy'});
 
       // Strategy validation
-      switch(data.strategy) {
+      switch(data.strategy.name) {
         case 'balance':
           if (!data.strategy.tradegap) return new app.HttpBadRequest({ok:false,field:'strategy.tradegap',message:'Tradegap Missing'});
           if (isNaN(data.strategy.tradegap)) return new app.HttpBadRequest({ok:false,field:'strategy.tradegap',message:'Invalid Tradegap'});

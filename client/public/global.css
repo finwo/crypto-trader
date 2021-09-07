@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
+
+:root {
+  --font-regular   : Montserrat, sans-serif;
+  --font-monospace : monospace;
+
+  --col-pri-bg : #FFF;
+  --col-pri-fg : #333;
+  --border: 1px solid var(--col-pri-fg);
+  --shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+* {
+  background: inherit;
+  border: none;
+  box-sizing: border-box;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 2em;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+html {
+  background: #f6f6f6;
+  color: var(--col-pri-fg);
+  font-family: var(--font-regular);
+  min-height: 100vh;
+}
+pre, code {
+  font-family: var(--font-monospace);
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+}
+h1 + small,
+h2 + small,
+h3 + small,
+h4 + small {
+  position: relative;
+  top: -2em;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child {
+  margin-top: 0;
+}
+
+h1 { font-size: 2.00rem; }
+h2 { font-size: 1.67rem; }
+h3 { font-size: 1.33rem; }
+h4 { font-size: 1.00rem; }
+h5 { font-size: 0.90rem; }
+h6 { font-size: 0.80rem; }
+
+input, select, textarea, button {
+  border: var(--border);
+  padding: 0.25em 0.5em;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+.form-group + .form-group {
+  margin-top: 1em;
+}
+button {
+  background: var(--col-pri-fg);
+  border: unset;
+  color: var(--col-pri-bg);
+  cursor: pointer;
+}
+label + input {
+  margin-top: 0.5em;
+}

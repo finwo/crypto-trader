@@ -1,4 +1,4 @@
 node_modules/
-public/app.js
-.env
-.env.*
+bak/
+dist/
+/data/

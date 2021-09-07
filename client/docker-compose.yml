@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+
+  web:
+    image: finwo/quark:latest
+    volumes:
+      - ./dist/:/srv/www
+    ports:
+      - '5000:5000'

@@ -1,0 +1,50 @@
+{
+  "name": "crypto-trader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -e js,ts -w src -x npm -- run build-start",
+    "build-start": "npm run build ; npm run start",
+    "start": "node dist/index.js",
+    "build": "rimraf dist ; npm-run-all build:*",
+    "build:code": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "/home/finwo/git/finwo/crypto-trader"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-express": "^3.1.2",
+    "app-root-path": "^3.0.0",
+    "autolevel": "^2.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-jwt": "^6.1.0",
+    "helmet": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "level": "^7.0.0",
+    "levelgraph": "^3.0.0",
+    "module-alias": "^2.2.2",
+    "morgan": "^1.10.0",
+    "npm-run-all": "^4.1.5",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "supercop": "^2.2.5",
+    "to-case": "^2.0.0",
+    "type-graphql": "^1.1.1",
+    "typedi": "^0.10.0",
+    "typescript": "^4.3.5",
+    "url-parse": "^1.5.3"
+  },
+  "_moduleAliases": {
+    "@config": "dist/config",
+    "@entity": "dist/entity",
+    "@helper": "dist/helper"
+  }
+}

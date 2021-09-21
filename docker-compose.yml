@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - letsencrypt-certs:/etc/nginx/certs:ro
+    networks:
+      - webproxy
+
+  client:
+    image: finwo/quark:latest
+    depends_on:
+      - api
+    volumes:
+      - ./client/dist:/srv/www
+    networks:
+      - webproxy
+    environment:
+      - PORT=5000
+      - VIRTUAL_PORT=5000
+      - VIRTUAL_HOST=client.docker
+
+  api:
+    build:
+      context: api
+    command: npm run start:dev
+    depends_on:
+      - mysql
+    volumes:
+      - ./api:/app
+    networks:
+      - webproxy
+      - default
+    dns:
+      - 8.8.8.8
+    environment:
+      - PORT=5000
+      - DB_URL=mysql://user:password@mysql/database
+      - VIRTUAL_PORT=5000
+      - VIRTUAL_HOST=api.docker
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    networks:
+      - default
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=y
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=database
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
+  adminer:
+    image: finwo/adminer
+    restart: always
+    ports:
+      - 4000:8080
+    depends_on:
+      - mysql
+    networks:
+      - webproxy
+      - default
+    environment:
+      - VIRTUAL_PORT=8080
+      - VIRTUAL_HOST=adminer.docker
+
+networks:
+  default:
+  webproxy:
+
+volumes:
+  letsencrypt-certs:

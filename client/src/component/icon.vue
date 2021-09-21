@@ -2,6 +2,13 @@
   <i><slot></slot></i>
 </template>
 
+<style scoped>
+  svg {
+    display: inline-block;
+    vertical-align: inherit;
+  }
+</style>
+
 <script>
 import feather from 'feather-icons';
 import { getCurrentInstance, onMounted } from 'vue';

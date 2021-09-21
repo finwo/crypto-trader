@@ -41,6 +41,7 @@ export default {
           isAuthenticated
           currentUser {
             email
+            displayName
           }
         }
       `

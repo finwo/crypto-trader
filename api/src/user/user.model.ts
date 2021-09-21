@@ -15,8 +15,13 @@ export class UserModel extends BaseEntity {
   email: string;
 
   @Field()
-  @Column({ nullable: false })
+  @Column({ nullable : false })
   pubkey: string;
+
+  @Field({ nullable : true })
+  @Column({ nullable : true })
+  displayName?: string;
+
 }
 
 database.entities.push(UserModel);

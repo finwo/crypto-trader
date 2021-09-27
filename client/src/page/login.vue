@@ -1,84 +1,79 @@
 <template>
-  <layout-auth>
-    <template v-slot:title>Login</template>
-    <template v-slot:content>
-      <form @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" v-model="email">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" v-model="password">
-        </div>
-        <center>
-          <br/>
-          No account yet? <router-link to="/register">Register here</router-link><br/>
-          Forgot password? <router-link to="/forgot-password">Reset password</router-link>
-        </center>
-        <div class="form-group">
-          <label>&nbsp;</label>
-          <button type="submit">Login</button>
-        </div>
-      </form>
-    </template>
-  </layout-auth>
+  <h2>Login</h2>
+  <form @submit.prevent="handleSubmit()">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" v-model="email" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" v-model="password" />
+    </div>
+    <div class="form-group">
+      <label>&nbsp;</label>
+      <button type="submit">Login</button>
+    </div>
+  </form>
 </template>
 
 <script>
-import { Buffer } from 'buffer';
-import { getCurrentInstance } from 'vue';
-import { useMutation } from 'villus';
-import LayoutAuth from '../layout/auth.vue';
 
+import { Buffer } from 'buffer';
+import { PBKDF2 } from '@appvise/digest-pbkdf2';
+import { useMutation } from 'villus';
 import supercop from 'supercop';
-import { PBKDF2 } from '../component/pbkdf2';
 
 export default {
-  components: {LayoutAuth},
   setup() {
-    const ctx = getCurrentInstance().proxy;
 
-    const { execute: login } = useMutation(`
+
+    const Login = `
       mutation Login($email: String!, $nonce: Int!, $signature: String!) {
-        authLogin(email: $email, nonce: $nonce, signature: $signature) {
+        login(email: $email, nonce: $nonce, signature: $signature) {
           accessToken
+          refreshToken
+          expiresAt
         }
       }
-    `);
+    `;
+
+    const { execute: login } = useMutation(Login);
 
     return {
-      email    : null,
-      password : null,
+      async handleSubmit() {
+        const seed    = await new Promise(r => new PBKDF2(this.password, this.email, 1000, 32).deriveKey(()=>{},r));
+        const keypair = await supercop.createKeyPair(Buffer.from(seed, 'hex'));
+        const nonce   = Math.floor(Date.now() / 1000);
 
-      async handleLogin() {
-        const seed      = await new Promise(r => (new PBKDF2(ctx.password, ctx.email, 1000, 32)).deriveKey(()=>{}, r));
-        const keypair   = await supercop.createKeyPair(Buffer.from(seed,'hex'));
-        const nonce     = Math.floor(Date.now() / 1000);
-        const signature = await keypair.sign(`login|${ctx.email}|${nonce}`);
+        console.log({self: this});
+
+        // Allow support to create pubkey (ask for pubkey in console)
+        console.log({ pubkey: keypair.publicKey.toString('hex') });
+
+        const message   = `login|${this.email}|${nonce}`;
+        const signature = await keypair.sign(message);
 
         const response = await login({
-          signature : signature.toString('hex'),
-          email     : ctx.email,
+          email: this.email,
           nonce,
+          signature: signature.toString('hex'),
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /g, ''));
+          alert(response.error.message.replace(/^\[GraphQL\] /, ''));
           return;
         }
 
-        localStorage.setItem('ctrader:auth', JSON.stringify({
-          email       : ctx.email,
-          pk          : keypair.publicKey.toString('hex'),
-          sk          : keypair.secretKey.toString('hex'),
-          accessToken : response.data.authLogin.accessToken,
+        // Store in localstorage & reload
+        localStorage.setItem('ccz-admin:auth', JSON.stringify({
+          accessToken : response.data.login.accessToken,
+          refreshToken: response.data.login.refreshToken,
+          expiresAt   : response.data.login.expiresAt,
         }));
 
-        await ctx.$root.refreshData();
-        ctx.$router.push('/dashboard');
+        this.$root.refreshUser();
       }
-    };
+    }
   }
 }
 </script>

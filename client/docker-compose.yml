@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+
+  admin:
+    image: finwo/quark:latest
+    volumes:
+      - ./dist:/srv/www
+    networks:
+      - webproxy
+    environment:
+      - PORT=5000
+      - VIRTUAL_PORT=5000
+      - VIRTUAL_HOST=admin.docker
+
+networks:
+  webproxy:

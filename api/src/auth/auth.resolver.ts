@@ -1,6 +1,5 @@
 import { Resolver, Args, Context, Query, Mutation, Int } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { UserModel } from '../user/user.model';
 import { AuthenticationModel } from './auth.model';
 
 @Resolver()
@@ -40,6 +39,20 @@ export class AuthResolver {
   @Query(() => Boolean)
   async isAuthenticated(@Context() ctx): Promise<boolean> {
     return !!ctx.auth;
+  }
+
+  @Mutation(() => AuthenticationModel)
+  async authUpdatePassword(
+    @Args('email'    , { type : () => String }) email     : string,
+    @Args('nonce'    , { type : () => Int    }) nonce     : number,
+    @Args('pubkey'   , { type : () => String }) pubkey    : string,
+    @Args('signature', { type : () => String }) signature : string
+  ): Promise<AuthenticationModel> {
+    const user = await this.authService.register(email, nonce, pubkey, signature);
+    const auth = new AuthenticationModel();
+    auth.user        = user;
+    auth.accessToken = await this.authService.buildAccessToken(user);
+    return auth;
   }
 
 }

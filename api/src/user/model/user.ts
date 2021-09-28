@@ -4,7 +4,7 @@ import { database } from '@config';
 
 @Entity('user')
 @ObjectType('User')
-export class UserModel extends BaseEntity {
+export class User extends BaseEntity {
 
   @Field()
   @PrimaryGeneratedColumn('uuid')
@@ -24,4 +24,3 @@ export class UserModel extends BaseEntity {
 
 }
 
-database.entities.push(UserModel);

@@ -32,10 +32,11 @@ async function bootstrap() {
     if (header.alg !== 'ed25519') return next();
 
     // Verify expiry & nbf/iat
+    const now = Math.floor(Date.now() / 1000);
     if (!body.exp) return next();
-    if (body.exp < Date.now()) return next();
-    if (body.iat && (body.iat > Date.now())) return next();
-    if (body.nbf && (body.nbf > Date.now())) return next();
+    if (body.exp < now) return next();
+    if (body.iat && (body.iat > now)) return next();
+    if (body.nbf && (body.nbf > now)) return next();
 
     // VErify signature
     if (!await config.auth.kp.verify(signature, `${headerRaw}.${bodyRaw}`)) return next();

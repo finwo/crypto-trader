@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { UserModel } from '../user/user.model';
+import { User } from '../user/model/user';
 import supercop from 'supercop';
 import * as config from '@config';
 import base64url from 'base64url';
@@ -11,7 +11,7 @@ export class AuthService {
     private userService: UserService
   ) {}
 
-  async register(email: string, nonce: number, pubkey: string, signature: string): Promise<UserModel> {
+  async register(email: string, nonce: number, pubkey: string, signature: string): Promise<User> {
 
     // Verify nonce within 5 minutes
     if (Math.abs(Math.floor(Date.now() / 1000) - nonce) > 300) throw new Error("Nonce skewed");
@@ -39,7 +39,7 @@ export class AuthService {
     return this.userService.create(email, pubkey);
   }
 
-  async login(email: string, nonce: number, signature: string): Promise<UserModel> {
+  async login(email: string, nonce: number, signature: string): Promise<User> {
 
     // Verify nonce within 5 minutes
     if (Math.abs(Math.floor(Date.now() / 1000) - nonce) > 300) throw new Error("Nonce skewed");
@@ -67,11 +67,11 @@ export class AuthService {
   }
 
   // Builds server-signed token that points to the user
-  async buildAccessToken(identifier: string | Partial<UserModel>): Promise<string> {
+  async buildAccessToken(identifier: string | Partial<User>): Promise<string> {
     const user   = await this.userService.get(identifier);
-    const now    = Date.now();
+    const now    = Math.floor(Date.now() / 1000);
     const header = base64url.encode(JSON.stringify({typ: 'jct',alg: 'ed25519'}));
-    const body   = base64url.encode(JSON.stringify({sub: user.uuid, iat: now, exp: now + (3600 * 1000)}));
+    const body   = base64url.encode(JSON.stringify({sub: user.uuid, iat: now, exp: now + 3600}));
     const signature = base64url.encode(await config.auth.kp.sign(`${header}.${body}`));
     return `${header}.${body}.${signature}`;
   }

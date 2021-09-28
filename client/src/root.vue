@@ -1,45 +1,19 @@
 <template>
-  <f-nav />
-  <div id="rt">
-    Hello World
-  </div>
-  <!-- <nav v-if="data && data.currentUser"> -->
-  <!--   <div class="f-left"> -->
-  <!--     <router-link to="/">Home</router-link> -->
-  <!--   </div> -->
-  <!--   <div class="f-right"> -->
-  <!--     <router-link to="/courses">Courses</router-link> -->
-  <!--     <router-link to="/groups">Groups</router-link> -->
-  <!--     <router-link to="/terms">Terms</router-link> -->
-  <!--     <router-link to="/users">Users</router-link> -->
-  <!--     | -->
-  <!--     <a class="" href="#!" @click.prevent="logout">Logout</a> -->
-  <!--   </div> -->
-  <!--   <div style="clear:both;"></div> -->
-  <!-- </nav> -->
-  <!-- <hr v-if="data && data.currentUser" /> -->
-  <!-- <router-view v-if="data && data.currentUser"></router-view> -->
-  <!-- <page-login v-if="!data" /> -->
+  <router-view v-if="data && data.currentUser"/>
+  <page-auth v-if="!data || !data.currentUser"/>
 </template>
 
-<style scoped>
-#rt {
-  margin: 0 auto;
-  max-width: ~calc(100% - 2rem);
-  width: 60rem;
-}
-</style>
-
 <script lang="ts">
+import { ref } from 'vue';
 import { useClient, useQuery, fetch } from "villus";
 import { lock, unlock } from 'nlock';
 
-import FNav from './component/nav.vue';
+import PageAuth from './page/auth/index.vue';
 
 export default {
-  components: {FNav},
+  components: {PageAuth},
   setup() {
-    let   auth     = JSON.parse(localStorage.getItem('ctrader:auth'));
+    let   auth = JSON.parse(localStorage.getItem('ctrader:auth'));
 
     const fetchPlugin = fetch({
       fetch: async (url, opts) => {
@@ -72,22 +46,24 @@ export default {
           currentUser {
             uuid
             email
+            displayName
           }
         }
       `
     });
 
     return {
+      pageTitle: ref(''),
       data,
 
       async refreshUser() {
-        auth = JSON.parse(localStorage.getItem('ccz-admin:auth'));
+        auth = JSON.parse(localStorage.getItem('ctrader:auth'));
         await refreshUser();
       },
 
       async logout() {
         auth = {};
-        localStorage.removeItem('ccz-admin:auth');
+        localStorage.removeItem('ctrader:auth');
         await this.refreshUser();
       },
     };

@@ -1,28 +1,45 @@
-import { Resolver, Query, Args, ID, Context } from '@nestjs/graphql';
-import { UserModel } from './user.model';
+import { Resolver, Query, Mutation, Args, ID, Context } from '@nestjs/graphql';
+import { User } from './model/user';
 import { UserService } from './user.service';
 
-@Resolver(of => UserModel)
+@Resolver(of => User)
 export class UserResolver {
   constructor(
     private userService: UserService
   ) {}
 
-  @Query(() => UserModel, { nullable : true })
-  async currentUser(@Context() ctx): Promise<UserModel> {
+  @Query(() => User, { nullable : true })
+  async currentUser(@Context() ctx): Promise<User> {
     if (!ctx.auth) return null;
     if (!ctx.auth.sub) return null;
     return this.userService.get(ctx.auth.sub);
   }
 
-  // @Query(() => [UserModel])
-  // users(): Promise<UserModel[]> {
-  //   return this.userService.find();
-  // }
-
-  // @Query(() => UserModel, {name : 'user', nullable : true})
-  // user(@Args('uuid', {type : () => ID}) uuid: string) {
-  //   return this.userService.get({ uuid });
-  // }
+  @Mutation(() => User, { nullable : true })
+  async userUpdate(
+    @Context() ctx,
+    @Args('email'      , { type : () => String, nullable : true }) email?      : string,
+    @Args('pubkey'     , { type : () => String, nullable : true }) pubkey?     : string,
+    @Args('displayName', { type : () => String, nullable : true }) displayName?: string,
+  ) {
+    if (!ctx.auth) return null;
+    if (!ctx.auth.sub) return null;
+    const data: Partial<User> = Object
+      .entries({
+        email,
+        pubkey,
+        displayName,
+      })
+      .filter(([key, value]) => {
+        if (undefined === value) return false;
+        if (null === value) return false;
+        return true;
+      })
+      .reduce((r,[k,v]) => {
+        r[k] = v;
+        return r;
+      }, {});
+    return this.userService.update(ctx.auth.sub, data);
+  }
 
 }

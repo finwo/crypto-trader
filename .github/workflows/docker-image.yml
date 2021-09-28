@@ -25,14 +25,14 @@ jobs:
     - name: Build and push to Docker Hub
       uses: docker/build-push-action@v2
       with:
-        context: api/
+        context: ./api
         push: true
         tags: finwo/crypto-trader-api:latest
 
     - name: Build and push to Docker Hub
       uses: docker/build-push-action@v2
       with:
-        context: client/
+        context: ./client
         push: true
         tags: finwo/crypto-trader-client:latest
 

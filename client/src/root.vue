@@ -32,7 +32,8 @@ export default {
     });
 
     const endpoints = {
-      'client.docker' : 'http://api.docker/graphql',
+      'trader.finwo.net' : 'https://api.trader.finwo.net/graphql',
+      'client.docker'    : 'http://api.docker/graphql',
     };
 
     useClient({

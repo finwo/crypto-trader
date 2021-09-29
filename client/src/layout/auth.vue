@@ -14,7 +14,7 @@
 }
 #layout-auth > .content {
   background: #FFF;
-  margin-top: 5rem;
+  margin-top: 3rem;
   margin-bottom: 5rem;
   text-align: initial;
   display: inline-block;
@@ -26,5 +26,15 @@
 }
 #layout-auth > .content > :last-child {
   margin-bottom: 0;
+}
+
+/* 640px based on form aesthetics */
+@media screen and (max-width: 640px) {
+  #layout-auth {
+    background: #FFF;
+  }
+  #layout-auth > .content {
+    width: calc(100% - 2rem);
+  }
 }
 </style>

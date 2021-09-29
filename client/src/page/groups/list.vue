@@ -35,6 +35,7 @@ import icon from '../../component/icon.vue';
 export default {
   components: {icon},
   setup() {
+
     const { data } = useQuery({
       query: `
         query {

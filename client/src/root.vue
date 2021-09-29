@@ -7,13 +7,14 @@
 import { ref } from 'vue';
 import { useClient, useQuery, fetch } from "villus";
 import { lock, unlock } from 'nlock';
+import persist from '@appvise/persistent-object';
 
 import PageAuth from './page/auth/index.vue';
 
 export default {
   components: {PageAuth},
   setup() {
-    let   auth = JSON.parse(localStorage.getItem('ctrader:auth'));
+    const auth = persist({ store: localStorage, key: 'ctrader:auth' });
 
     const fetchPlugin = fetch({
       fetch: async (url, opts) => {
@@ -22,7 +23,7 @@ export default {
         await lock('villus-graphql-fetch');
         opts = opts || {};
         opts.headers = opts.headers || {};
-        if (auth && auth.accessToken) {
+        if (auth.accessToken && (!auth.expiresAt || (auth.expiresAt > Math.floor(Date.now() / 1000)))) {
           opts.headers['Authorization'] = 'Bearer ' + auth.accessToken;
         }
         const result = await window.fetch(url, opts);
@@ -58,13 +59,11 @@ export default {
       data,
 
       async refreshUser() {
-        auth = JSON.parse(localStorage.getItem('ctrader:auth'));
         await refreshUser();
       },
 
       async logout() {
-        auth = {};
-        localStorage.removeItem('ctrader:auth');
+        Object.keys(auth.toJSON()).forEach(key => delete auth[key]);
         await this.refreshUser();
       },
     };

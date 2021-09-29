@@ -36,6 +36,7 @@ h3 + small {
 
 button,
 label,
+th,
 h1, h2,
 h3, h4,
 h5, h6 {
@@ -58,19 +59,31 @@ svg.feather,
   vertical-align: middle;
 }
 
-/* Form styling */
-.form-group + .form-group {
-  margin-top: 1em;
+center > * > * {
+  text-align: initial;
 }
-label {
-  display: inline-block;
+
+/* Form styling */
+.form-group {
+  + .form-group {
+    margin-top: 1em;
+  }
+  label,
+  input,
+  button,
+  select,
+  textarea,
+  .vue-select {
+    display: block;
+    width: 100%;
+  }
 }
 button,
 input,
 select,
 textarea,
 .vue-select {
-  background: #0001;
+  background: #F8F8F8;
   border: 1px solid #0004;
   border-radius: 0.25em;
   font-family: inherit;
@@ -78,6 +91,18 @@ textarea,
   width: 100%;
   padding: 0.5em 1em;
   display: inline-block;
+}
+.vue-input,
+.vue-input input {
+  font-size: inherit !important;
+}
+
+::placeholder { color: inherit; opacity: 1; }
+:-ms-input-placeholder { color: inherit; }
+::-ms-input-placeholder { color: inherit; }
+
+.vue-dropdown-item {
+  padding: 0.5em 1em !important;
 }
 select {
   box-shadow: 0 0 0 1.25em inset #FFF;
@@ -101,4 +126,9 @@ textarea[disabled] {
   background: #DDD;
   color: #555;
   cursor: not-allowed;
+}
+
+.danger {
+  background: #cc241d;
+  color: #FFF;
 }

@@ -1,6 +1,6 @@
 import { Resolver, Args, Context, Query, Mutation, Int } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { AuthenticationModel } from './auth.model';
+import { AuthenticationToken } from './auth.model';
 
 @Resolver()
 export class AuthResolver {
@@ -8,30 +8,28 @@ export class AuthResolver {
     private authService: AuthService
   ) {}
 
-  @Mutation(() => AuthenticationModel)
+  @Mutation(() => AuthenticationToken)
   async authRegister(
     @Args('email'    , { type : () => String }) email     : string,
     @Args('nonce'    , { type : () => Int    }) nonce     : number,
     @Args('pubkey'   , { type : () => String }) pubkey    : string,
     @Args('signature', { type : () => String }) signature : string
-  ): Promise<AuthenticationModel> {
+  ): Promise<AuthenticationToken> {
     const user = await this.authService.register(email, nonce, pubkey, signature);
-    const auth = new AuthenticationModel();
-    auth.user        = user;
-    auth.accessToken = await this.authService.buildAccessToken(user);
+    const auth = new AuthenticationToken(user);
+    auth.accessToken = await this.authService.buildAccessToken(auth);
     return auth;
   }
 
-  @Mutation(() => AuthenticationModel)
+  @Mutation(() => AuthenticationToken)
   async authLogin(
     @Args('email'    , { type : () => String }) email     : string,
     @Args('nonce'    , { type : () => Int    }) nonce     : number,
     @Args('signature', { type : () => String }) signature : string
-  ): Promise<AuthenticationModel> {
-    const user = await this.authService.login(email, nonce, signature);
-    const auth = new AuthenticationModel();
-    auth.user        = user;
-    auth.accessToken = await this.authService.buildAccessToken(user);
+  ): Promise<AuthenticationToken> {
+    const user = await this.authService.verifyLogin(email, nonce, signature);
+    const auth = new AuthenticationToken(user);
+    auth.accessToken = await this.authService.buildAccessToken(auth);
     return auth;
   }
 
@@ -41,17 +39,16 @@ export class AuthResolver {
     return !!ctx.auth;
   }
 
-  @Mutation(() => AuthenticationModel)
+  @Mutation(() => AuthenticationToken)
   async authUpdatePassword(
     @Args('email'    , { type : () => String }) email     : string,
     @Args('nonce'    , { type : () => Int    }) nonce     : number,
     @Args('pubkey'   , { type : () => String }) pubkey    : string,
     @Args('signature', { type : () => String }) signature : string
-  ): Promise<AuthenticationModel> {
+  ): Promise<AuthenticationToken> {
     const user = await this.authService.register(email, nonce, pubkey, signature);
-    const auth = new AuthenticationModel();
-    auth.user        = user;
-    auth.accessToken = await this.authService.buildAccessToken(user);
+    const auth = new AuthenticationToken(user);
+    auth.accessToken = await this.authService.buildAccessToken(auth);
     return auth;
   }
 

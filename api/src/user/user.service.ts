@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { User } from './model/user';
+import { Portfolio } from '../portfolio/model/portfolio';
 
 @Injectable()
 export class UserService {
@@ -44,6 +46,15 @@ export class UserService {
 
   async find(query?: {[index:string]:any}): Promise<User[]> {
     return this.repo.find(query);
+  }
+
+  async getPorfolio(user: User): Promise<Portfolio[]> {
+    if (user.portfolio) return user.portfolio;
+    return this.repo
+      .createQueryBuilder()
+      .relation(User, 'portfolio')
+      .of(user)
+      .loadMany()
   }
 
 }

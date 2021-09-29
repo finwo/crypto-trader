@@ -1,8 +1,8 @@
 <template>
   <layout>
-    <div>
-      Pick a category from the many to start managing.
-    </div>
+    <p>
+      The dashboard is still under construction. Please pick a category from the menu to interact with the system.
+    </p>
   </layout>
 </template>
 

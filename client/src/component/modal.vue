@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-close-button" v-if="showCloseButton" @click="$emit('close')">
-          <icon>x-circle</icon>
+          <icon>close</icon>
         </div>
         <div class="modal-header">
           <slot name="header" />
@@ -41,9 +41,9 @@
 .modal-container {
   display: inline-block;
   position: relative;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: var(--col-pri-bg);
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  background-color: #FFF;
   border-radius: 2px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
@@ -52,13 +52,8 @@
 
 .modal-close-button {
   position: absolute;
-  right: -12px;
-  top: -12px;
-}
-.modal-close-button svg { /* only tested with feather icons */
-  background: #FFF;
-  border-radius: 1em;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  right: 0.4rem;
+  top: 0;
   cursor: pointer;
 }
 
@@ -67,7 +62,7 @@
 }
 
 .modal-body {
-  margin: 20px 0;
+  margin: 1rem 0;
 }
 
 .modal-default-button {

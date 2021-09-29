@@ -5,12 +5,15 @@ import supercop from 'supercop';
 import * as config from '@config';
 import base64url from 'base64url';
 
+import { AuthenticationToken } from './auth.model';
+
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService
   ) {}
 
+  // Doesn't re-use validateSignature to perform some extra verbose checking
   async register(email: string, nonce: number, pubkey: string, signature: string): Promise<User> {
 
     // Verify nonce within 5 minutes
@@ -39,25 +42,20 @@ export class AuthService {
     return this.userService.create(email, pubkey);
   }
 
-  async login(email: string, nonce: number, signature: string): Promise<User> {
-
+  async verifyLogin(email: string, nonce: number, signature: string): Promise<User> {
     // Verify nonce within 5 minutes
     if (Math.abs(Math.floor(Date.now() / 1000) - nonce) > 300) throw new Error("Nonce skewed");
 
-    // Check if user doesn't already exist
+    // Check if user exists
     const found = await this.userService.findOne({ email });
     if (!found) throw new Error("Invalid credentials"); // email not found
 
-    // Hex-encoded pubkey
-    const pubkeyDecoded = Buffer.from(found.pubkey, 'hex');
-    if (pubkeyDecoded.length !== 32) throw new Error("Invalid credentials"); // pubkey broken..
-
     // Verify signature
     const message = `login|${email}|${nonce}`;
-    if (!await supercop.verify(
-      Buffer.from(signature, 'hex'),
+    if (!await this.validateSignature(
       message,
-      pubkeyDecoded
+      found.pubkey,
+      signature
     )) {
       throw new Error("Invalid credentials"); // invalid password
     }
@@ -66,12 +64,22 @@ export class AuthService {
     return found;
   }
 
+  async validateSignature(message: string, pubkey: string, signature: string) {
+    const pubkeyDecoded = Buffer.from(pubkey, 'hex');
+    if (pubkeyDecoded.length !== 32) return false;
+    const signatureDecoded = Buffer.from(signature, 'hex');
+    if (signatureDecoded.length !== 64) return false;
+    return supercop.verify(
+      signatureDecoded,
+      message,
+      pubkeyDecoded,
+    );
+  }
+
   // Builds server-signed token that points to the user
-  async buildAccessToken(identifier: string | Partial<User>): Promise<string> {
-    const user   = await this.userService.get(identifier);
-    const now    = Math.floor(Date.now() / 1000);
+  async buildAccessToken(auth: AuthenticationToken): Promise<string> {
     const header = base64url.encode(JSON.stringify({typ: 'jct',alg: 'ed25519'}));
-    const body   = base64url.encode(JSON.stringify({sub: user.uuid, iat: now, exp: now + 3600}));
+    const body   = base64url.encode(JSON.stringify({sub: auth.user.uuid, iat: auth.issuedAt, exp: auth.expiresAt}));
     const signature = base64url.encode(await config.auth.kp.sign(`${header}.${body}`));
     return `${header}.${body}.${signature}`;
   }

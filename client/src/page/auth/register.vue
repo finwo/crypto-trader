@@ -35,11 +35,13 @@ import { Buffer } from 'buffer';
 import { PBKDF2 } from '@appvise/digest-pbkdf2';
 import { useMutation } from 'villus';
 import supercop from 'supercop';
+import persist from '@appvise/persistent-object';
 
 export default {
   components: {LayoutAuth},
   emits: ['login'],
   setup() {
+    const auth = persist({ store: localStorage, key: 'ctrader:auth' });
 
     const Register = `
       mutation Register($email: String!, $nonce: Int!, $signature: String!, $pubkey: String!) {
@@ -81,16 +83,14 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, ''));
+          alert(response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"));
           return;
         }
 
         // Store in localstorage & reload
-        localStorage.setItem('ctrader:auth', JSON.stringify({
-          accessToken  : response.data.authRegister.accessToken,
-          refreshToken : response.data.authRegister.refreshToken,
-          expiresAt    : response.data.authRegister.expiresAt,
-        }));
+        auth.accessToken  = response.data.authRegister.accessToken;
+        auth.refreshToken = response.data.authRegister.refreshToken;
+        auth.expiresAt    = response.data.authRegister.expiresAt;
 
         this.$root.refreshUser();
       }

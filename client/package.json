@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@appvise/digest-pbkdf2": "^1.0.5",
+    "@appvise/persistent-object": "^1.0.1",
     "buffer": "^6.0.3",
     "copy-dir": "^1.3.0",
     "date-fns": "^2.23.0",
@@ -29,8 +30,7 @@
     "supercop": "^2.2.5",
     "villus": "^1.0.0-rc.20",
     "vue": "^3.2.4",
-    "vue-next-select": "^2.10.1",
-    "vue-router": "^4.0.11",
-    "vue3-date-time-picker": "^1.0.4"
+    "vue-next-select": "^3.0.0-alpha.3",
+    "vue-router": "^4.0.11"
   }
 }

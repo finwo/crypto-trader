@@ -1,6 +1,6 @@
 <template>
   <layout>
-    <div>
+    <center>
 
       <form @submit.prevent="handleUpdateProfile()" class="inline">
         <h3>Profile</h3>
@@ -13,10 +13,6 @@
           <button type="submit">Update</button>
         </div>
       </form>
-
-      <br />
-      <br />
-      <hr />
 
       <form @submit.prevent="handleUpdatePassword()" class="inline">
         <h3>Update password</h3>
@@ -34,9 +30,24 @@
         </div>
       </form>
 
-    </div>
+      <form @submit.prevent="handleDeleteAccount()" class="inline">
+        <h3>Delete account</h3>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button type="submit" class="danger">Delete account</button>
+        </div>
+      </form>
+
+    </center>
   </layout>
 </template>
+
+<style scoped>
+form {
+  margin: 1rem;
+  vertical-align: top;
+}
+</style>
 
 <script lang="ts">
 import { ref, getCurrentInstance, onMounted } from 'vue';
@@ -116,7 +127,11 @@ export default {
 
         this.$root.refreshUser();
         this.$router.go();
-      }
+      },
+
+      async handleDeleteAccount() {
+        alert('NOT IMPLEMENTED YET');
+      },
 
     }
   }

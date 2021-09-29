@@ -7,7 +7,7 @@
 
 <style scoped>
 .wrapper {
-  margin: 1rem;
+  margin: 1.5rem 2rem;
 }
 </style>
 

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
 
 import * as config from '@config';
 
@@ -22,6 +23,7 @@ import * as config from '@config';
     ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
+    PortfolioModule,
   ],
 })
 export class AppModule {}

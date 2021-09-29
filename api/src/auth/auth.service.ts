@@ -27,7 +27,7 @@ export class AuthService {
 
     // Verify signature
     const message = `register|${email}|${nonce}`;
-    if (!supercop.verify(
+    if (!await supercop.verify(
       Buffer.from(signature, 'hex'),
       message,
       pubkeyDecoded
@@ -54,7 +54,7 @@ export class AuthService {
 
     // Verify signature
     const message = `login|${email}|${nonce}`;
-    if (!supercop.verify(
+    if (!await supercop.verify(
       Buffer.from(signature, 'hex'),
       message,
       pubkeyDecoded

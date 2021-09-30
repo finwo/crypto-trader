@@ -89,7 +89,6 @@ nav.open {
 .topbar .grow * {
   margin: 0;
 }
-
 </style>
 
 <style>

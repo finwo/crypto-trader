@@ -1,4 +1,4 @@
-import { Resolver, ResolveField, Parent, Query, Mutation, Context, Args } from '@nestjs/graphql';
+import { Resolver, ResolveField, Parent, Query, Mutation, Context, Args, ID } from '@nestjs/graphql';
 import { PortfolioService } from './portfolio.service';
 import { UserService } from '../user/user.service';
 
@@ -50,5 +50,16 @@ export class PortfolioResolver {
     });
   }
 
+  @Mutation(() => Boolean)
+  async removePortfolio(
+    @Context() ctx,
+    @Args('uuid', { type : () => ID, nullable : false }) uuid: string
+  ): Promise<boolean> {
+    if (!ctx.auth) return null;
+    if (!ctx.auth.sub) return null;
+    const user = await this.userService.get(ctx.auth.sub);
+    if (!user) return null;
+    return this.portfolioService.remove(user, uuid);
+  }
 
 }

@@ -95,7 +95,14 @@ export default {
       }
     `;
 
-    const { execute: addPortfolio } = useMutation(AddPortfolio);
+    const RemovePortfolio = `
+      mutation RemovePortfolio($uuid: ID!) {
+        removePortfolio(uuid: $uuid)
+      }
+    `;
+
+    const { execute: addPortfolio    } = useMutation(AddPortfolio);
+    const { execute: removePortfolio } = useMutation(RemovePortfolio);
 
     return {
       data,
@@ -125,7 +132,18 @@ export default {
       },
 
       async handleDeletePortfolio(portfolio) {
-        alert('NOT IMPLEMENTED YET');
+        if (!confirm(`Are you sure you want to remove portfolio '${portfolio.displayName}'?`)) return;
+
+        const response = await removePortfolio({
+          uuid: portfolio.uuid,
+        });
+
+        if (response.error) {
+          alert(response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"));
+          return;
+        }
+
+        await refreshData();
       }
 
     };

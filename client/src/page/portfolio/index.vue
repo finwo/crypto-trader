@@ -13,6 +13,7 @@
           <td>{{ portfolio.displayName }}</td>
           <td>{{ portfolio.provider }}</td>
           <td>
+            <a href="#!" @click.prevent="handleDeletePortfolio(portfolio)" style="color:inherit;"><icon>edit</icon></a>
             <a href="#!" @click.prevent="handleDeletePortfolio(portfolio)" style="color:inherit;"><icon>delete</icon></a>
           </td>
         </tr>
@@ -61,19 +62,15 @@
 
 <script lang="ts">
 
-import { getCurrentInstance, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useQuery, useMutation } from 'villus';
-import Layout from '../layout/dashboard.vue';
-import Icon from '../component/icon.vue';
-import Modal from '../component/modal.vue';
+import Layout from '../../layout/dashboard.vue';
+import Icon from '../../component/icon.vue';
+import Modal from '../../component/modal.vue';
 
 export default {
   components: {Layout,Icon,Modal},
   setup() {
-    const root = getCurrentInstance().proxy.$root;
-    onMounted(() => {
-      root.pageTitle = 'Portfolios';
-    });
 
     const { data, execute: refreshData } = useQuery({
       query: `

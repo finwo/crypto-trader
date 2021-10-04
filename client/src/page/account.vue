@@ -50,7 +50,6 @@ form {
 </style>
 
 <script lang="ts">
-import { ref, getCurrentInstance, onMounted } from 'vue';
 import { useMutation } from 'villus';
 import { PBKDF2 } from '@appvise/digest-pbkdf2';
 import { Buffer } from 'buffer';
@@ -60,11 +59,6 @@ import Layout from '../layout/dashboard.vue';
 export default {
   components: {Layout},
   setup() {
-    const root = getCurrentInstance().proxy.$root;
-    onMounted(() => {
-      root.pageTitle = 'Account';
-      this.displayName = root.data.currentUser.displayName;
-    });
 
     const UpdatePassword = `
       mutation UpdatePassword($pubkey: String!) {

@@ -7,10 +7,11 @@
       </center>
     </div>
     <ul>
-      <li><router-link to="/"><icon>dashboard</icon><span>Dashboard</span></router-link></li>
-      <li><router-link to="/portfolios"><icon>account_balance_wallet</icon><span>Portfolios</span></router-link></li>
-      <li><router-link to="/bots"><icon>smart_toy</icon><span>Bots</span></router-link></li>
-      <li><router-link to="/account"><icon>person</icon><span>Account</span></router-link></li>
+      <template v-for="route in $router.getRoutes()">
+        <li v-if="route.meta.nav">
+          <router-link :to="route.path"><icon>{{ route.meta.icon }}</icon><span>{{ route.name }}</span></router-link>
+        </li>
+      </template>
     </ul>
   </nav>
   <div class="topbar">
@@ -18,7 +19,7 @@
       <a href="#!" @click.prevent="toggleMenu" v-if="isOpen"><icon>navigate_before</icon></a>
       <a href="#!" @click.prevent="toggleMenu" v-if="!isOpen"><icon>menu</icon></a>
     </div>
-    <div class="grow"><h4>{{ $root.pageTitle }}</h4></div>
+    <div class="grow"><h4>{{ $route.name }}</h4></div>
     <div>
       <a href="#!" @click.prevent="$root.logout()"><icon>logout</icon></a>
     </div>
@@ -104,7 +105,7 @@ body.menu-opened {
 
 <script lang="ts">
 
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, getCurrentInstance } from 'vue';
 import Icon from './icon.vue';
 
 export default {

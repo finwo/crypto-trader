@@ -39,6 +39,7 @@
     "nestjs-command": "^3.0.2",
     "node-fetch": "^3.0.0",
     "parse-url": "^5.0.7",
+    "qs": "^6.10.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",

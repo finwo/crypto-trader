@@ -55,7 +55,6 @@ export default {
     });
 
     return {
-      pageTitle: ref(''),
       data,
 
       async refreshUser() {

@@ -53,14 +53,14 @@ li a > * {
   vertical-align: middle;
 }
 li a.router-link-active {
-  background-color: #4A60B2
+  background: #FFF3;
 }
 li a:hover {
-  background: #FFF4;
+  background: #FFF6;
 }
 nav {
-  background: #0F285C;
-  color: #FFF;
+  background: var(--col-primary-dark);
+  color: var(--col-text-icons);
   position: fixed;
   overflow: auto;
   left: -15rem;

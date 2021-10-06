@@ -2,8 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
 :root {
-  --col-text   : #222222;
-  --col-accent : #cc241d;
+
+  --col-text-icons      : #FFFFFF;
+  --col-primary-dark    : #000051;
+  --col-primary-light   : #534bae;
+  --col-primary         : #1a237e;
+  --col-primary-text    : #212121;
+  --col-secondary-text  : #757575;
+  --col-divider         : #BDBDBD;
+  --col-danger          : #dd2c00;
+  --col-danger-contrast : var(--col-text-icons);
 }
 
 *, *:before, *:after {
@@ -16,8 +24,8 @@ html, body {
   padding : 0;
 }
 html {
-  background  : #F8F7F6;
-  color       : var(--col-text);
+  background  : #F8F8F9;
+  color       : var(--col-primary-text);
   font-family : Poppins, sans-serif;
   overflow-x  : hidden;
 }
@@ -46,7 +54,7 @@ h5, h6 {
 
 hr {
   border: none;
-  border-bottom: 1px solid #DDD;
+  border-bottom: 1px solid var(--col-divider);
 }
 
 .inline {
@@ -85,8 +93,9 @@ select,
 textarea,
 .vue-select {
   background: #FFF;
-  border: 1px solid #0004;
+  border: 1px solid var(--col-divider);
   border-radius: 0.25em;
+  color: inherit;
   font-family: inherit;
   font-size: inherit;
   width: 100%;
@@ -112,12 +121,12 @@ textarea {
   height: initial;
 }
 button {
-  background: #0F285C;
-  color: #FFF;
+  background: var(--col-primary-dark);
+  color: var(--col-text-icons);
   cursor: pointer;
   &:active {
-    background: #148988;
-    color: #FFF;
+    background: var(--col-primary-light);
+    color: var(--col-text-icons);
   }
 }
 button[disabled],
@@ -130,12 +139,17 @@ textarea[disabled] {
 }
 
 .danger {
-  background: #cc241d;
-  color: #FFF;
+  background: var(--col-danger);
+  color: var(--col-danger-contrast);
 }
 
 th {
   text-align: left;
+}
+
+a,
+a:visited {
+  color: var(--col-primary-light);
 }
 
 .card {

@@ -10,15 +10,20 @@ type KeyPair = {
 };
 
 type AuthType = {
-  kp: KeyPair,
-  authProperty: string,
+  kp                 : KeyPair,
+  authProperty       : string,
+  accessTokenExpiry  : number,
+  refreshTokenExpiry : number,
 };
 
 export const auth: AuthType = {
-  kp: supercop.createKeyPair(seed),
-  authProperty: 'auth',
+  kp                 : supercop.createKeyPair(seed),
+  authProperty       : 'auth',
+  accessTokenExpiry  : 3600,   // Access tokens expire after an hour by default
+  refreshTokenExpiry : 604800, // Refresh token expire after a week by default
 };
 
+// Resolve promise
 (async () => {
   auth.kp = await auth.kp;
 })();

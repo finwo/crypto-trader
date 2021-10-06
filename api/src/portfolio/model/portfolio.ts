@@ -28,5 +28,8 @@ export class Portfolio extends BaseEntity {
   @Column({ nullable : false })
   credentials: string;
 
+  @Field(() => Number, { nullable : false })
+  value: number;
+
 }
 

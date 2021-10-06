@@ -23,6 +23,14 @@ export class PortfolioResolver {
     return found;
   }
 
+  @Query(() => Portfolio, { nullable : true })
+  async portfolio(
+    @Context() ctx,
+    @Args('uuid', { type : () => ID, nullable : false }) uuid: string
+  ): Promise<Portfolio> {
+    return (await this.portfolios(ctx)).find(portfolio => portfolio.uuid == uuid) || null;
+  }
+
   @Query(() => [Portfolio])
   async portfolios(@Context() ctx): Promise<Portfolio[]> {
     if (!ctx.auth) return null;

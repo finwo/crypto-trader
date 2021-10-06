@@ -16,6 +16,7 @@ html, body {
   padding : 0;
 }
 html {
+  background  : #F8F7F6;
   color       : var(--col-text);
   font-family : Poppins, sans-serif;
   overflow-x  : hidden;
@@ -31,7 +32,7 @@ h1 + small,
 h2 + small,
 h3 + small {
   position: relative;
-  top: -1rem;
+  top: -2em;
 }
 
 button,
@@ -83,7 +84,7 @@ input,
 select,
 textarea,
 .vue-select {
-  background: #F8F8F8;
+  background: #FFF;
   border: 1px solid #0004;
   border-radius: 0.25em;
   font-family: inherit;
@@ -114,10 +115,10 @@ button {
   background: #0F285C;
   color: #FFF;
   cursor: pointer;
-}
-button:active {
-  background: #148988;
-  color: #FFF;
+  &:active {
+    background: #148988;
+    color: #FFF;
+  }
 }
 button[disabled],
 input[disabled],
@@ -135,4 +136,16 @@ textarea[disabled] {
 
 th {
   text-align: left;
+}
+
+.card {
+  border-radius: 0.25em;
+  background: #FFF;
+  box-shadow: 0 1px 2px #0008;
+  padding: 1.5rem 2rem;
+  h1:first-child,
+  h2:first-child,
+  h3:first-child {
+    margin-top: 0;
+  }
 }

@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { Cron, Timeout } from '@nestjs/schedule';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Portfolio } from './model/portfolio';
-import { Repository } from "typeorm";
+import { Repository, MoreThan } from "typeorm";
 
 import { User } from '../user/model/user';
+
+import { AbstractAdapter } from './adapter/abstract';
+import { CoinbaseAdapter } from './adapter/coinbase';
 
 @Injectable()
 export class PortfolioService {
@@ -51,5 +55,28 @@ export class PortfolioService {
     await portfolio.remove();
     return true;
   }
+
+  // // Updates all tickers, but only once per provider
+  // @Cron('0 * * * * *') // Run every minute, TODO: no polling
+  // async updateAllTickers() {
+  //   let uuid          = '';
+  //   let portfolio     = await Portfolio.findOne({ uuid: MoreThan(uuid) });
+  //   const hadProvider = {};
+
+  //   do {
+  //     uuid           = portfolio.uuid;
+  //     if (hadProvider[portfolio.provider]) continue;
+  //     const adapter  = AbstractAdapter.instance(portfolio);
+  //     const products = await adapter.getProducts();
+  //     if (!products) continue;
+  //     hadProvider[portfolio.provider] = true;
+
+  //     await Promise.all(products.map(async product => {
+  //       const ticker = await adapter.getTicker(product.id);
+  //       ticker.save();
+  //     }));
+
+  //   } while(portfolio = await Portfolio.findOne({ uuid: MoreThan(uuid) }));
+  // }
 
 }

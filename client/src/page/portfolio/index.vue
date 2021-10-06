@@ -1,11 +1,27 @@
 <template>
   <layout>
+
+    <div>
+      <a href="#!" @click.prevent="shownModal = 'addPortfolio'" style="color:inherit;text-decoration:none;"><icon>add</icon><span>Add portfolio</span></a>
+    </div>
+
+    <div v-for="portfolio in (data && data.portfolios || [])" class="inline card" style="position:relative;min-width:20rem;">
+      <h3>{{ portfolio.displayName }}</h3>
+      <small>{{ portfolio.provider }}</small>
+      <div style="position:absolute;top:1.5rem;right:2rem;">
+        <router-link :to="`/portfolio/${portfolio.uuid}`" style="color:inherit;"><icon>edit</icon></router-link>
+        <a href="#!" @click.prevent="handleDeletePortfolio(portfolio)" style="color:inherit;"><icon>delete</icon></a>
+      </div>
+      <div>
+
+      </div>
+    </div>
+
     <table>
       <thead>
         <tr>
           <th>Name</th>
           <th>Provider</th>
-          <th><a href="#!" @click.prevent="shownModal = 'addPortfolio'" style="color:inherit;"><icon>add</icon></a></th>
         </tr>
       </thead>
       <tbody>
@@ -13,7 +29,7 @@
           <td>{{ portfolio.displayName }}</td>
           <td>{{ portfolio.provider }}</td>
           <td>
-            <a href="#!" @click.prevent="handleDeletePortfolio(portfolio)" style="color:inherit;"><icon>edit</icon></a>
+            <router-link :to="`/portfolio/${portfolio.uuid}`"><icon>edit</icon></router-link>
             <a href="#!" @click.prevent="handleDeletePortfolio(portfolio)" style="color:inherit;"><icon>delete</icon></a>
           </td>
         </tr>

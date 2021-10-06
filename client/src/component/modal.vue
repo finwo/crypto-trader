@@ -44,7 +44,7 @@
   margin: 0 auto;
   padding: 1.5rem 2rem;
   background-color: #FFF;
-  border-radius: 2px;
+  border-radius: 0.25em;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
   text-align: initial;
@@ -52,7 +52,7 @@
 
 .modal-close-button {
   position: absolute;
-  right: 0.4rem;
+  right: 0.3rem;
   top: 0;
   cursor: pointer;
 }

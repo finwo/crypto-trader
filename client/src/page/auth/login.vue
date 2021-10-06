@@ -25,7 +25,7 @@
   </layout-auth>
 </template>
 
-<script>
+<script lang="ts">
 import LayoutAuth from '../../layout/auth.vue';
 
 import { Buffer } from 'buffer';
@@ -44,6 +44,7 @@ export default {
       mutation Login($email: String!, $nonce: Int!, $signature: String!) {
         authLogin(email: $email, nonce: $nonce, signature: $signature) {
           accessToken
+          refreshToken
           expiresAt
         }
       }
@@ -73,15 +74,19 @@ export default {
           signature: signature.toString('hex'),
         });
 
+        console.log({response});
+
         if (response.error) {
           alert(response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"));
           return;
         }
 
         // Store in localstorage & reload
-        auth.accessToken  = response.data.authLogin.accessToken;
-        auth.refreshToken = response.data.authLogin.refreshToken;
-        auth.expiresAt    = response.data.authLogin.expiresAt;
+        Object.assign(auth, {
+          accessToken : response.data.authLogin.accessToken,
+          refreshToken: response.data.authLogin.refreshToken,
+          expiresAt   : response.data.authLogin.expiresAt,
+        });
 
         this.$root.refreshUser();
       }

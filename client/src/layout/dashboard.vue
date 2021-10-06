@@ -5,9 +5,12 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .wrapper {
-  margin: 1.5rem 2rem;
+  padding: 0.75rem 1rem;
+}
+.wrapper > * {
+  margin: 0.75rem 1rem;
 }
 </style>
 

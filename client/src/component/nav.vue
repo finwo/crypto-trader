@@ -80,6 +80,7 @@ nav.open {
 }
 
 .topbar {
+  background: #FFF;
   display: flex;
   padding: 0.5em;
   border-bottom: 1px solid #DDD;

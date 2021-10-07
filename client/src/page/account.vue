@@ -127,7 +127,7 @@ export default {
         }
 
         this.$root.refreshUser();
-        this.$router.go();
+        // this.$router.go();
       },
 
       async handleUpdatePreferences() {

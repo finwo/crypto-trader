@@ -1,4 +1,4 @@
-import { Resolver, ResolveField, Parent, Query, Mutation, Context, Args, ID } from '@nestjs/graphql';
+import { Resolver, ResolveField, Parent, Query, Mutation, Context, Args, ID, Float } from '@nestjs/graphql';
 import { PortfolioService } from './portfolio.service';
 import { UserService } from '../user/user.service';
 
@@ -21,6 +21,11 @@ export class PortfolioResolver {
     const found = await this.portfolioService.getUser(portfolio);
     if (user.uuid !== found.uuid) return null; // How did you get the portfolio uuid??
     return found;
+  }
+
+  @ResolveField(() => Float, { nullable : false })
+  async value(@Context() ctx, @Parent() portfolio: Portfolio): Promise<number> {
+    return 0;
   }
 
   @Query(() => Portfolio, { nullable : true })

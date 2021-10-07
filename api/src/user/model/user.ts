@@ -12,17 +12,21 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
-  @Field()
+  @Field({ nullable : false })
   @Column({ nullable : false })
   email: string;
 
-  @Field()
+  @Field({ nullable : false })
   @Column({ nullable : false })
   pubkey: string;
 
   @Field({ nullable : true })
   @Column({ nullable : true })
   displayName?: string;
+
+  @Field({ nullable : false })
+  @Column({ nullable: false, default: 'EUR' })
+  displayCurrency: string;
 
   @Field(() => [Portfolio])
   @OneToMany(() => Portfolio, portfolio => portfolio.user, { cascade : true })

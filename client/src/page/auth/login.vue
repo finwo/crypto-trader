@@ -8,11 +8,11 @@
     <form @submit.prevent="handleSubmit()">
       <div class="form-group">
         <label>Email</label>
-        <input type="email" v-model="email" />
+        <input type="email" v-model="email" required />
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" v-model="password" />
+        <input type="password" v-model="password" required />
       </div>
       <center class="form-group">
         <span>No account yet? <a href="#!" @click.prevent="$emit('register')">Register here</a></span><br/>

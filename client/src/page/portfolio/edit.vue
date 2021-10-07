@@ -1,8 +1,8 @@
 <template>
   <layout>
-    {{ data && data.portfolio.displayName }}
-    <br/><br/>
-    TODO
+    <form>
+      {{ data && data.portfolio.displayName }}
+    </form>
   </layout>
 </template>
 

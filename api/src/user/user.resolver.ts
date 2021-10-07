@@ -18,9 +18,10 @@ export class UserResolver {
   @Mutation(() => User, { nullable : true })
   async userUpdate(
     @Context() ctx,
-    @Args('email'      , { type : () => String, nullable : true }) email?      : string,
-    @Args('pubkey'     , { type : () => String, nullable : true }) pubkey?     : string,
-    @Args('displayName', { type : () => String, nullable : true }) displayName?: string,
+    @Args('email'          , { type : () => String, nullable : true }) email?          : string,
+    @Args('pubkey'         , { type : () => String, nullable : true }) pubkey?         : string,
+    @Args('displayName'    , { type : () => String, nullable : true }) displayName?    : string,
+    @Args('displayCurrency', { type : () => String, nullable : true }) displayCurrency?: string,
   ) {
     if (!ctx.auth) return null;
     if (!ctx.auth.sub) return null;
@@ -29,6 +30,7 @@ export class UserResolver {
         email,
         pubkey,
         displayName,
+        displayCurrency,
       })
       .filter(([key, value]) => {
         if (undefined === value) return false;

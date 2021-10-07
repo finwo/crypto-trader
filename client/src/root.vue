@@ -49,6 +49,7 @@ export default {
             uuid
             email
             displayName
+            displayCurrency
           }
         }
       `

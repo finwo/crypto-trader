@@ -2,11 +2,24 @@
   <layout>
     <center>
 
-      <form @submit.prevent="handleUpdateProfile()" class="inline">
-        <h3>Profile</h3>
+      <form @submit.prevent="handleUpdatePreferences()" class="inline">
+        <h3>Preferences</h3>
         <div class="form-group">
           <label>Display name</label>
           <input type="text" v-model="$root.data.currentUser.displayName" />
+        </div>
+        <div class="form-group">
+          <label>Display currency</label>
+          <vue-select
+            v-model="$root.data.currentUser.displayCurrency"
+            :options="displayCurrency"
+            label-by="text"
+            value-by="value"
+            :close-on-select="true"
+            :placeholder="$root.data.currentUser.displayCurrency"
+            :searchable="true"
+            :clear-on-select="true"
+          />
         </div>
         <div class="form-group">
           <label>&nbsp;</label>
@@ -56,8 +69,11 @@ import { Buffer } from 'buffer';
 import supercop from 'supercop';
 import Layout from '../layout/dashboard.vue';
 
+import 'vue-next-select/dist/index.min.css';
+import VueSelect from 'vue-next-select';
+
 export default {
-  components: {Layout},
+  components: {Layout,VueSelect},
   setup() {
 
     const UpdatePassword = `
@@ -68,20 +84,25 @@ export default {
       }
     `;
 
-    const UpdateProfile = `
-      mutation UpdateProfile($displayName: String) {
-        userUpdate(displayName: $displayName) {
+    const UpdatePreferences = `
+      mutation UpdatePreferences($displayName: String, $displayCurrency: String) {
+        userUpdate(displayName: $displayName, displayCurrency: $displayCurrency) {
           uuid
         }
       }
     `;
 
-    const { execute: updatePassword } = useMutation(UpdatePassword);
-    const { execute: updateProfile  } = useMutation(UpdateProfile);
+    const { execute: updatePassword    } = useMutation(UpdatePassword);
+    const { execute: updatePreferences } = useMutation(UpdatePreferences);
 
     return {
       password : '',
       repeat   : '',
+      displayCurrency: [
+        { text: 'BTC - Bitcoin'  , value: 'BTC' },
+        { text: 'EUR - Euro'     , value: 'EUR' },
+        { text: 'USD - US Dollar', value: 'USD' },
+      ],
 
       async handleUpdatePassword() {
         if (this.password !== this.repeat) {
@@ -109,9 +130,10 @@ export default {
         this.$router.go();
       },
 
-      async handleUpdateProfile() {
-        const response = await updateProfile({
-          displayName: this.$root.data.currentUser.displayName,
+      async handleUpdatePreferences() {
+        const response = await updatePreferences({
+          displayName    : this.$root.data.currentUser.displayName,
+          displayCurrency: this.$root.data.currentUser.displayCurrency,
         });
 
         if (response.error) {
@@ -120,7 +142,6 @@ export default {
         }
 
         this.$root.refreshUser();
-        this.$router.go();
       },
 
       async handleDeleteAccount() {

@@ -20,6 +20,7 @@
 
     <div class="form-group">
       <label>Teacher</label>
+
       <vue-select
         v-model="data.course.teacher"
         :options="data && data.teachers || []"
@@ -29,6 +30,7 @@
         :searchable="true"
         :clear-on-select="true"
       />
+
     </div>
     <div class="form-group">
       <label>Common name</label>

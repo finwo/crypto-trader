@@ -13,28 +13,10 @@
         <a href="#!" @click.prevent="handleDeletePortfolio(portfolio)" style="color:inherit;"><icon>delete</icon></a>
       </div>
       <div>
-
+        Hello Text
       </div>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Provider</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="portfolio in (data && data.portfolios || [])">
-          <td>{{ portfolio.displayName }}</td>
-          <td>{{ portfolio.provider }}</td>
-          <td>
-            <router-link :to="`/portfolio/${portfolio.uuid}`"><icon>edit</icon></router-link>
-            <a href="#!" @click.prevent="handleDeletePortfolio(portfolio)" style="color:inherit;"><icon>delete</icon></a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </layout>
 
   <modal v-if="shownModal == 'addPortfolio'" :showCloseButton="true" @close="shownModal = false" ref="modalAddPortfolio">

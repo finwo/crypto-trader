@@ -8,7 +8,7 @@
 
 <style>
 #layout-auth {
-  background: var(--col-primary-dark);
+  background: var(--col-primary);
   text-align: center;
   min-height: 100vh;
 }

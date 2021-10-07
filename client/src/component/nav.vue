@@ -59,7 +59,7 @@ li a:hover {
   background: #FFF6;
 }
 nav {
-  background: var(--col-primary-dark);
+  background: var(--col-primary);
   color: var(--col-text-icons);
   position: fixed;
   overflow: auto;

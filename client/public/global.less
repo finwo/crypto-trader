@@ -2,16 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
 :root {
-
   --col-text-icons      : #FFFFFF;
-  --col-primary-dark    : #000051;
-  --col-primary-light   : #534bae;
-  --col-primary         : #1a237e;
+  --col-primary         : #0F285C;
   --col-primary-text    : #212121;
-  --col-secondary-text  : #757575;
   --col-divider         : #BDBDBD;
-  --col-danger          : #dd2c00;
-  --col-danger-contrast : var(--col-text-icons);
+  --col-accent          : #148988;
+  --col-accent-contrast : #FFFFFF;
+  --col-danger          : #891415;
+  --col-danger-contrast : #FFFFFF;;
 }
 
 *, *:before, *:after {
@@ -121,11 +119,12 @@ textarea {
   height: initial;
 }
 button {
-  background: var(--col-primary-dark);
+  background: var(--col-primary);
+  border: none;
   color: var(--col-text-icons);
   cursor: pointer;
   &:active {
-    background: var(--col-primary-light);
+    background: var(--col-accent);
     color: var(--col-text-icons);
   }
 }
@@ -149,7 +148,7 @@ th {
 
 a,
 a:visited {
-  color: var(--col-primary-light);
+  color: var(--col-accent);
 }
 
 .card {

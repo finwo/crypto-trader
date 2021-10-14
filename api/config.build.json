@@ -1,0 +1,15 @@
+{
+   "$": {
+     "join": {
+       "long": "="
+     }
+   },
+   "outdir": "dist/",
+   "target": "es2017",
+   "platform": "node",
+   "sourcemap": true,
+   "format": "cjs",
+   "_": [
+      "src/**/*.ts"
+   ]
+}

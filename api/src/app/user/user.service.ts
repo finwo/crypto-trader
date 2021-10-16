@@ -42,13 +42,13 @@ export class UserService {
     return user;
   }
 
-  // async update(identifier: string | Partial<User>, data: Partial<User>): Promise<User> {
-  //   delete data.uuid;
-  //   const user = await this.get(identifier);
-  //   Object.assign(user,data);
-  //   await user.save();
-  //   return user;
-  // }
+  async update(identifier: string, data: Partial<User>): Promise<User> {
+    delete data.uuid;
+    const user = await this.get(identifier);
+    Object.assign(user,data);
+    await this.repo.save(user);
+    return user;
+  }
 
   // TODO: make this more efficient
   async findOne(query?: {[index:string]:any}): Promise<User> {

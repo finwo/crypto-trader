@@ -48,7 +48,6 @@ export default {
           currentUser {
             uuid
             email
-            displayName
             displayCurrency
           }
         }

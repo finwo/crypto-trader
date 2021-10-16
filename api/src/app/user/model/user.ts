@@ -24,10 +24,6 @@ export class User {
   pubkey: string;
 
   @Field(() => String, { nullable : true })
-  // @Column({ nullable : true })
-  displayName?: string;
-
-  @Field(() => String, { nullable : true })
   displayCurrency?: string;
 
   // @Field(() => [Portfolio])

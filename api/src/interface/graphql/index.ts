@@ -59,6 +59,7 @@ function buildDefinition(name: string, options: FieldOptions, args: ArgumentDesc
     nameSuffix += '(';
     nameSuffix += args
       .filter(arg => !arg.context)
+      .filter(arg => !arg.auth)
       .map((arg: ArgumentDescriptor) => {
         return `${arg.name}: ${resolveType(arg.options, undefined)}`;
       })

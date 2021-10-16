@@ -5,7 +5,7 @@ import { ObjectType, Field } from '@graphql';
 // import { ObjectType, Field } from '@nestjs/graphql';
 // import { database } from '@config';
 
-// import { Portfolio } from '../../portfolio/model/portfolio';
+import { Portfolio } from '../../portfolio/model/portfolio';
 
 @Service()
 @ObjectType('User')
@@ -26,9 +26,8 @@ export class User {
   @Field(() => String, { nullable : true })
   displayCurrency?: string;
 
-  // @Field(() => [Portfolio])
-  // @OneToMany(() => Portfolio, portfolio => portfolio.user, { cascade : true })
-  // portfolio: Portfolio[];
+  // Resolved field
+  portfolio: Portfolio[];
 
 }
 

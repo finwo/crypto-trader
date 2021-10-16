@@ -6,8 +6,8 @@ export type Triple = {
   object    : string|number;
 }
 
-export function fromTriples(triples: Triple[], includeKeys: boolean = false): {[index:string]:any} {
-  const graph = {};
+export function fromTriples(triples: Triple[], includeKeys: boolean = false): {[index:string]:any}[] | {[index:string]:{[index:string]:string|number}} {
+  const graph: {[index:string]:{[index:string]:string|number}} = {};
   triples.forEach(triple => {
     if (!(triple.subject in graph)) graph[triple.subject] = { 'uuid': triple.subject };
     graph[triple.subject][triple.predicate] = triple.object;

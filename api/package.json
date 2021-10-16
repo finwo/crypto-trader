@@ -39,7 +39,7 @@
     "@app": "dist/app",
     "@config": "dist/config",
     "@graphql": "dist/interface/graphql",
-    "@db": "dist/middleware/database",
+    "@db": "dist/lib/db",
     "@lib": "dist/lib"
   }
 }

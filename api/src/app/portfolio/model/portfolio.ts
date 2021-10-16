@@ -1,32 +1,27 @@
 // import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-// import { ObjectType, Field } from '@nestjs/graphql';
 // import { database } from '@config';
 
-// import { User } from '../../user/model/user';
+import { ObjectType, Field } from '@graphql';
 
-// @Entity('portfolio')
-// @ObjectType('Portfolio')
-// export class Portfolio extends BaseEntity {
+import { User } from '../../user/model/user';
 
-//   @Field()
-//   @PrimaryGeneratedColumn('uuid')
-//   uuid: string;
+@ObjectType('Portfolio')
+export class Portfolio {
 
-//   @Field(() => User)
-//   @ManyToOne(() => User)
-//   user: User;
+  @Field(() => String)
+  uuid: string;
 
-//   @Field()
-//   @Column({ nullable : false })
-//   displayName?: string;
+  @Field(() => User, { nullable : false })
+  user: User;
 
-//   @Field()
-//   @Column({ nullable : false })
-//   provider: string;
+  @Field(() => String, { nullable : false })
+  displayName: string;
 
-//   @Field()
-//   @Column({ nullable : false })
-//   credentials: string;
+  @Field(() => String, { nullable : false })
+  provider: string;
 
-// }
+  @Field(() => String, { nullable : false })
+  credentials: string;
+
+}
 

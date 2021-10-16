@@ -6,7 +6,8 @@ import { UserService } from '../user/user.service';
 import { User } from '../user/model/user';
 // import { InjectRepository } from '@nestjs/typeorm';
 // import { Repository, LessThan } from 'typeorm';
-// import { AuthenticationToken } from './model/authentication-token';
+import { AuthenticationToken } from './model/authentication-token';
+import { Repository } from '@db';
 
 import supercop from 'supercop';
 // import * as config from '@config';
@@ -14,32 +15,32 @@ import supercop from 'supercop';
 
 @Service()
 export class AuthService {
+  private repo: Repository<AuthenticationToken>
+
   constructor(
     private userService: UserService
-  //   @InjectRepository(AuthenticationToken) private repo: Repository<AuthenticationToken>
-  ) {}
+  ) {
+    this.repo = new Repository(AuthenticationToken);
+  }
 
-  // async get(identifier: string | Partial<AuthenticationToken>): Promise<AuthenticationToken> {
-  //   if (!identifier) return null;
-  //   let uuid: string = null;
-  //   if ('string' === typeof identifier) {
-  //     uuid = identifier;
-  //   } else {
-  //     uuid = identifier.uuid;
-  //   }
-  //   if (!uuid) {
-  //     return null;
-  //   }
-  //   return this.repo.findOne({ uuid });
-  // }
+  async get(identifier: string | Partial<AuthenticationToken>): Promise<AuthenticationToken> {
+    if (!identifier) return null;
+    let uuid: string = null;
+    if ('string' === typeof identifier) {
+      uuid = identifier;
+    } else {
+      uuid = identifier.uuid;
+    }
+    if (!uuid) {
+      return null;
+    }
+    return this.repo.get(uuid);
+  }
 
-  // async getUser(identifier: string | Partial<AuthenticationToken>): Promise<User> {
-  //   return this.repo
-  //     .createQueryBuilder()
-  //     .relation(AuthenticationToken, 'user')
-  //     .of(identifier)
-  //     .loadOne();
-  // }
+  async getUser(identifier: string | Partial<AuthenticationToken>): Promise<User> {
+    const token = await this.get(identifier);
+    return this.userService.get(token.user);
+  }
 
   // Doesn't re-use validateSignature to perform some extra verbose checking
   async register(email: string, nonce: number, pubkey: string, signature: string): Promise<User> {

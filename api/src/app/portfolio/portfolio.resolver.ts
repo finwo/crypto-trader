@@ -1,27 +1,33 @@
-// import { Resolver, ResolveField, Parent, Query, Mutation, Context, Args, ID, Float } from '@nestjs/graphql';
-// import { PortfolioService } from './portfolio.service';
-// import { UserService } from '../user/user.service';
+import { Service } from 'typedi';
+import { Auth, Query, Resolver } from '@graphql';
 
-// import { Portfolio } from './model/portfolio';
-// import { User } from '../user/model/user';
+import { PortfolioService } from './portfolio.service';
+import { UserService } from '../user/user.service';
 
-// @Resolver(of => Portfolio)
-// export class PortfolioResolver {
-//   constructor(
-//     private userService: UserService,
-//     private portfolioService: PortfolioService
-//   ) {}
+import { Portfolio } from './model/portfolio';
+import { User } from '../user/model/user';
 
-//   @ResolveField(() => User, { nullable : true })
-//   async user(@Context() ctx, @Parent() portfolio: Portfolio): Promise<User> {
-//     if (!ctx.auth) return null;
-//     if (!ctx.auth.sub) return null;
-//     const user  = await this.userService.get(ctx.auth.sub);
-//     if (!user) return null;
-//     const found = await this.portfolioService.getUser(portfolio);
-//     if (user.uuid !== found.uuid) return null; // How did you get the portfolio uuid??
-//     return found;
-//   }
+@Service()
+@Resolver(Portfolio)
+export class PortfolioResolver {
+  constructor(
+    private userService: UserService,
+    private portfolioService: PortfolioService
+  ) {}
+
+  // @ResolveField()
+  // async user(
+  //   // @Context() ctx, @Parent() portfolio: Portfolio
+  // ): Promise<User> {
+// //     if (!ctx.auth) return null;
+// //     if (!ctx.auth.sub) return null;
+// //     const user  = await this.userService.get(ctx.auth.sub);
+// //     if (!user) return null;
+// //     const found = await this.portfolioService.getUser(portfolio);
+// //     if (user.uuid !== found.uuid) return null; // How did you get the portfolio uuid??
+// //     return found;
+  //   return null;
+  // }
 
 //   @ResolveField(() => Float, { nullable : false })
 //   async value(@Context() ctx, @Parent() portfolio: Portfolio): Promise<number> {
@@ -36,14 +42,14 @@
 //     return (await this.portfolios(ctx)).find(portfolio => portfolio.uuid == uuid) || null;
 //   }
 
-//   @Query(() => [Portfolio])
-//   async portfolios(@Context() ctx): Promise<Portfolio[]> {
-//     if (!ctx.auth) return null;
-//     if (!ctx.auth.sub) return null;
-//     const user = await this.userService.get(ctx.auth.sub);
-//     if (!user) return null;
-//     return this.userService.getPorfolio(user);
-//   }
+  @Query(() => [Portfolio], { nullable : true })
+  async portfolios(@Auth() auth): Promise<Portfolio[]> {
+    if (!auth) return null;
+    if (!auth.sub) return null;
+    const user = await this.userService.get(auth.sub);
+    if (!user) return null;
+    return this.portfolioService.getPortfolioForUser(user);
+  }
 
 //   @Mutation(() => Portfolio)
 //   async addPortfolio(
@@ -75,4 +81,4 @@
 //     return this.portfolioService.remove(user, uuid);
 //   }
 
-// }
+}

@@ -16,9 +16,18 @@ export class UserService {
     this.repo = new Repository(User);
   }
 
-  async get(identifier: string): Promise<User> {
+  async get(identifier: string | Partial<User>): Promise<User> {
     if (!identifier) return null;
-    return this.repo.findOne({ uuid: identifier });
+    let uuid: string = null;
+    if ('string' === typeof identifier) {
+      uuid = identifier;
+    } else {
+      uuid = identifier.uuid;
+    }
+    if (!uuid) {
+      return null;
+    }
+    return this.repo.get(uuid);
   }
 
   // async get(identifier: string | Partial<User>): Promise<User> {
@@ -50,22 +59,11 @@ export class UserService {
     return user;
   }
 
-  // TODO: make this more efficient
-  async findOne(query?: {[index:string]:any}): Promise<User> {
+  findOne(query?: {[index:string]:any}): Promise<User> {
     return this.repo.findOne(query);
   }
 
   find(query?: {[index:string]:any}): Promise<User[]> {
     return this.repo.find(query);
   }
-
-  // async getPorfolio(user: User): Promise<Portfolio[]> {
-  //   if (user.portfolio) return user.portfolio;
-  //   return this.repo
-  //     .createQueryBuilder()
-  //     .relation(User, 'portfolio')
-  //     .of(user)
-  //     .loadMany()
-  // }
-
 }

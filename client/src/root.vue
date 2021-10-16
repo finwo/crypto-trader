@@ -49,6 +49,9 @@ export default {
             uuid
             email
             displayCurrency
+            portfolio {
+              uuid
+            }
           }
         }
       `

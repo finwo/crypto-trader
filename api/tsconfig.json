@@ -24,8 +24,8 @@
       "@config/*": ["src/config/*"],
       "@graphql": ["src/interface/graphql"],
       "@graphql/*": ["src/insterface/graphql/*"],
-      "@db": ["src/middleware/database"],
-      "@db/*": ["src/middleware/database/*"],
+      "@db": ["src/lib/db"],
+      "@db/*": ["src/lib/db/*"],
       "@lib": ["src/lib"],
       "@lib/*": ["src/lib/*"]
     }

@@ -31,8 +31,8 @@ services:
     build:
       context: api
     command: npm run start:dev
-    depends_on:
-      - mysql
+    # depends_on:
+    #   - mysql
     volumes:
       - ./api:/app
     networks:
@@ -46,32 +46,32 @@ services:
       - VIRTUAL_PORT=5000
       - VIRTUAL_HOST=api.docker
 
-  mysql:
-    image: mysql:5.7
-    restart: always
-    networks:
-      - default
-    environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=y
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-      - MYSQL_DATABASE=database
-    volumes:
-      - ./data/mysql:/var/lib/mysql
+  # mysql:
+  #   image: mysql:5.7
+  #   restart: always
+  #   networks:
+  #     - default
+  #   environment:
+  #     - MYSQL_RANDOM_ROOT_PASSWORD=y
+  #     - MYSQL_USER=user
+  #     - MYSQL_PASSWORD=password
+  #     - MYSQL_DATABASE=database
+  #   volumes:
+  #     - ./data/mysql:/var/lib/mysql
 
-  adminer:
-    image: finwo/adminer
-    restart: always
-    ports:
-      - 4000:8080
-    depends_on:
-      - mysql
-    networks:
-      - webproxy
-      - default
-    environment:
-      - VIRTUAL_PORT=8080
-      - VIRTUAL_HOST=adminer.docker
+  # adminer:
+  #   image: finwo/adminer
+  #   restart: always
+  #   ports:
+  #     - 4000:8080
+  #   depends_on:
+  #     - mysql
+  #   networks:
+  #     - webproxy
+  #     - default
+  #   environment:
+  #     - VIRTUAL_PORT=8080
+  #     - VIRTUAL_HOST=adminer.docker
 
 networks:
   default:

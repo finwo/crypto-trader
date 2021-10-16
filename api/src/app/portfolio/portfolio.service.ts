@@ -1,22 +1,32 @@
 import { Service } from 'typedi';
+import { Repository } from '@db';
+
+import { UserService } from '../user/user.service';
 
 // import { Injectable } from '@nestjs/common';
 // import { Cron, Timeout } from '@nestjs/schedule';
-// import { InjectRepository } from "@nestjs/typeorm";
-// import { Portfolio } from './model/portfolio';
-// import { Repository, MoreThan } from "typeorm";
 
+import { Portfolio } from './model/portfolio';
 import { User } from '../user/model/user';
 
 // import { AbstractAdapter } from './adapter/abstract';
 // import { CoinbaseAdapter } from './adapter/coinbase';
 
-// @Injectable()
 @Service()
 export class PortfolioService {
+  private repo: Repository<Portfolio>
+
   constructor(
-    // @InjectRepository(Portfolio) private repo: Repository<Portfolio>,
-  ) {}
+    private userService: UserService
+  ) {
+    this.repo = new Repository(Portfolio);
+  }
+
+  async getPortfolioForUser(user: string | Partial<User>): Promise<Portfolio[]> {
+    user = await this.userService.get(user);
+    if (!user) return null;
+    return this.repo.find({ user: user.uuid });
+  }
 
   // async get(identifier: string | Partial<Portfolio>): Promise<Portfolio> {
   //   if (!identifier) return null;

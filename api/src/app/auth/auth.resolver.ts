@@ -1,54 +1,56 @@
-import { Service, Inject } from 'typedi';
-import { Context, Int, Arg, Query, Mutation } from '@graphql';
+import { Service } from 'typedi';
+import { Context, Int, Arg, Query, Mutation, Auth } from '@graphql';
+import { Repository } from '@db';
 
 import { AuthService } from '@app/auth/auth.service';
 import { UserService } from '@app/user/user.service';
 import { AuthenticationToken } from './model/authentication-token';
-// import { User } from '../user/model/user';
+import { User } from '../user/model/user';
 
 @Service()
 export class AuthResolver {
+  private repo: Repository<AuthenticationToken>
 
   constructor(
     private userService: UserService,
     private authService: AuthService
-  ) {}
+  ) {
+    this.repo = new Repository(AuthenticationToken);
+  }
 
-  // // TODO: decide whether to keep content here or if it should move to the auth service
-  // @Mutation(() => AuthenticationToken, { nullable : true })
-  // async authRefresh(
-  //   ctx,
-  //   req: Request
-  // ): Promise<AuthenticationToken> {
-  //   @Context() ctx,
-  //   @Args('refreshToken', { type : () => String }) refreshToken : string
-  //   let user: User;
-  //   let oldToken: AuthenticationToken;
+  // TODO: decide whether to keep content here or if it should move to the auth service
+  @Mutation(() => AuthenticationToken, { nullable : true })
+  async authRefresh(
+    @Auth() auth,
+    @Arg('refreshToken', { type : () => String }) refreshToken : string,
+  ): Promise<AuthenticationToken> {
+    let user: User;
+    let oldToken: AuthenticationToken;
 
-  //   // Fetch user from ctx
-  //   if (ctx.auth && ctx.auth.sub) {
-  //     user = await this.userService.get(ctx.auth.sub);
-  //   }
+    // Fetch user from ctx
+    if (auth && auth.sub) {
+      user = await this.userService.get(auth.sub);
+    }
 
-  //   // Use old authentication token to fetch user
-  //   oldToken = await AuthenticationToken.findOne({ refreshToken });
-  //   if ((!user) && oldToken) {
-  //     user = await this.authService.getUser(oldToken);
-  //   }
+    // Use old authentication token to fetch user
+    oldToken = await this.repo.findOne({ refreshToken });
+    if ((!user) && oldToken) {
+      user = await this.authService.getUser(oldToken);
+    }
 
-  //   // No user = both accessToken & refreshToken are bad
-  //   if (!user) {
-  //     throw new Error("Invalid token");
-  //   }
+    // No user = both accessToken & refreshToken are bad
+    if (!user) {
+      throw new Error("Invalid token");
+    }
 
-  //   // Invalidate old token (single-use only)
-  //   if (oldToken) {
-  //     await oldToken.remove();
-  //   }
+    // Invalidate old token (single-use only)
+    if (oldToken) {
+      await this.repo.remove(oldToken.uuid);
+    }
 
-  //   // Generate & return new token
-  //   return AuthenticationToken.init({ user });
-  // }
+    // Generate & return new token
+    return AuthenticationToken.init({ user });
+  }
 
   @Mutation(() => AuthenticationToken, { nullable : true })
   async authRegister(

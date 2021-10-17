@@ -37,6 +37,9 @@ import { useMutation } from 'villus';
 import supercop from 'supercop';
 import persist from '@appvise/persistent-object';
 
+import { useNotificationStore } from '@dafcoe/vue-notification'
+const { setNotification } = useNotificationStore()
+
 export default {
   components: {LayoutAuth},
   emits: ['login'],
@@ -83,7 +86,18 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 

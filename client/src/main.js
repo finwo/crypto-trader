@@ -2,6 +2,9 @@ import root from './root.vue';
 import { createApp } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 
+import VueNotificationList from '@dafcoe/vue-notification'
+import '@dafcoe/vue-notification/dist/vue-notification.css'
+
 import PageAccount    from './page/account.vue';
 import PageBots       from './page/bots.vue';
 import PageDashboard  from './page/dashboard.vue';
@@ -23,4 +26,5 @@ const router = createRouter({
 
 const app = createApp(root);
 app.use(router);
+app.use(VueNotificationList);
 app.mount(document.body);

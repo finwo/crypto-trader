@@ -1,6 +1,7 @@
 <template>
   <router-view v-if="data && data.currentUser"/>
   <page-auth v-if="!data || !data.currentUser"/>
+  <vue-notification-list position="bottom-right"></vue-notification-list>
 </template>
 
 <script lang="ts">

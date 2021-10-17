@@ -64,6 +64,9 @@ import { Buffer } from 'buffer';
 import supercop from 'supercop';
 import Layout from '../layout/dashboard.vue';
 
+import { useNotificationStore } from '@dafcoe/vue-notification'
+const { setNotification } = useNotificationStore()
+
 import 'vue-next-select/dist/index.min.css';
 import VueSelect from 'vue-next-select';
 
@@ -118,12 +121,36 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 
         this.$root.refreshUser();
         // this.$router.go();
+
+        setNotification({
+          message             : 'Password updated',
+          type                : 'success',
+          showIcon            : true,
+          duration            : 4e3,
+          showDurationProgress: true,
+          appearance          : 'light',
+          dismiss             : {
+            manually      : true,
+            automatically : true,
+          }
+        });
       },
 
       async handleUpdatePreferences() {
@@ -132,11 +159,35 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 
         this.$root.refreshUser();
+
+        setNotification({
+          message             : 'Preferences updated',
+          type                : 'success',
+          showIcon            : true,
+          duration            : 4e3,
+          showDurationProgress: true,
+          appearance          : 'light',
+          dismiss             : {
+            manually      : true,
+            automatically : true,
+          }
+        });
       },
 
     //   async handleDeleteAccount() {

@@ -1,7 +1,7 @@
 <template>
   <c-nav />
   <div class="wrapper">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
@@ -19,6 +19,5 @@ import CNav from '../component/nav.vue';
 
 export default {
   components: {CNav},
-  emits: ['pizza'],
 }
 </script>

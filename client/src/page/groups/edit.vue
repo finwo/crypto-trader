@@ -120,6 +120,9 @@ import { dateRef } from '../../component/date-ref';
 import icon from '../../component/icon.vue';
 import modal from '../../component/modal.vue';
 
+import { useNotificationStore } from '@dafcoe/vue-notification'
+const { setNotification } = useNotificationStore()
+
 import 'vue-next-select/dist/index.min.css';
 import VueSelect from 'vue-next-select';
 
@@ -215,7 +218,18 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, ''));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 
@@ -231,7 +245,18 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, ''));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 
@@ -247,7 +272,18 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, ''));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 
@@ -263,7 +299,18 @@ export default {
         });
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, ''));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 

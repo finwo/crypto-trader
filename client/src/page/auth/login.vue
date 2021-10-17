@@ -16,7 +16,7 @@
       </div>
       <center class="form-group">
         <span>No account yet? <a href="#!" @click.prevent="$emit('register')">Register here</a></span><br/>
-        <span><a href="#!" @click.prevent="alert('NOT IMPLEMENTED YET')">Forgot password</a></span><br/>
+        <span><a href="#!" @click.prevent="handleForgotPassword()">Forgot password</a></span><br/>
       </center>
       <div class="form-group">
         <button type="submit">Login</button>
@@ -33,6 +33,9 @@ import { PBKDF2 } from '@appvise/digest-pbkdf2';
 import { useMutation } from 'villus';
 import supercop from 'supercop';
 import persist from '@appvise/persistent-object';
+
+import { useNotificationStore } from '@dafcoe/vue-notification'
+const { setNotification } = useNotificationStore()
 
 export default {
   components: {LayoutAuth},
@@ -57,6 +60,21 @@ export default {
       email    : '',
       password : '',
 
+      async handleForgotPassword() {
+        setNotification({
+          message             : '"Forgot Password" has not been implemented yet',
+          type                : 'alert',
+          showIcon            : true,
+          duration            : 4e3,
+          showDurationProgress: true,
+          appearance          : 'light',
+          dismiss             : {
+            manually      : true,
+            automatically : true,
+          }
+        });
+      },
+
       async handleSubmit() {
         const seed    = await new Promise(r => new PBKDF2(this.password, this.email, 1000, 32).deriveKey(()=>{},r));
         const keypair = await supercop.createKeyPair(Buffer.from(seed, 'hex'));
@@ -77,7 +95,18 @@ export default {
         console.log({response});
 
         if (response.error) {
-          alert(response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"));
+          setNotification({
+            message             : response.error.message.replace(/^\[GraphQL\] /, '').replace(/\n\[GraphQL\] /g, "\n"),
+            type                : 'alert',
+            showIcon            : true,
+            duration            : 4e3,
+            showDurationProgress: true,
+            appearance          : 'light',
+            dismiss             : {
+              manually      : true,
+              automatically : true,
+            }
+          });
           return;
         }
 

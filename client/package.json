@@ -14,6 +14,7 @@
   "dependencies": {
     "@appvise/digest-pbkdf2": "^1.0.5",
     "@appvise/persistent-object": "^1.0.3",
+    "@dafcoe/vue-notification": "^0.1.6",
     "buffer": "^6.0.3",
     "copy-dir": "^1.3.0",
     "date-fns": "^2.23.0",

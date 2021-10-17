@@ -1,6 +1,6 @@
 <template>
-  <page-login v-if="mode == 'login'" @register="mode = 'register'" />
-  <page-register v-if="mode == 'register'" @login="mode = 'login'" />
+  <page-login    v-if="mode == 'login'"    @register="mode = 'register'" @login="mode = 'login'" />
+  <page-register v-if="mode == 'register'" @register="mode = 'register'" @login="mode = 'login'" />
 </template>
 
 <script lang="ts">

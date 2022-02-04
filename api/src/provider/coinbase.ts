@@ -3,6 +3,7 @@ import      { Book               } from '../type/book';
 import      { CoinbaseConnection } from '../type/connection';
 import      { Market             } from '../type/market';
 import      { Order              } from '../type/order';
+import      { Fee                } from '../type/fee';
 import      { Provider           } from '../interface/provider';
 import      { createHmac         } from 'crypto';
 import * as   https                from 'https';
@@ -88,6 +89,14 @@ export class CoinbaseProvider implements Provider {
             },
         } as Book;
     };
+
+    async getFee(connection: CoinbaseConnection, market: string): Promise<Fee> {
+        const raw = await this._call(connection, 'GET', `/fees`) as {taker_fee_rate:string,maker_fee_rate:string};
+        return {
+            maker : parseFloat(raw.maker_fee_rate),
+            taker : parseFloat(raw.taker_fee_rate),
+        } as Fee;
+    }
 
     async postOrder(connection: CoinbaseConnection, order: Order): Promise<any> {
         const bdy: {[index:string]:any} = {...order, product_id: order.market};

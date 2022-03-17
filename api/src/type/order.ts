@@ -8,7 +8,7 @@ export type LimitOrder = CommonOrder & {
   type           : "limit";
   price          : number | string;
   size           : number | string;
-  time_in_force ?: "GTC" | "GTT";
+  time_in_force ?: "GTC" | "GTT" | "IOC" | "FOK";
   cancel_after  ?: "min" | "hour" | "day";
   post_only     ?: boolean;
 };

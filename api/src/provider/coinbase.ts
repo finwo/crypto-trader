@@ -20,7 +20,7 @@ export class CoinbaseProvider implements Provider {
         method     : string,
         path       : string,
         body       : any = undefined,
-    ) {
+    ): Promise<any> {
         return new Promise(resolve => {
             body   = body && JSON.stringify(body);
             method = method.toUpperCase();
@@ -65,15 +65,13 @@ export class CoinbaseProvider implements Provider {
     async getMarket(connection: CoinbaseConnection, market: string): Promise<Market> {
         const raw: {[index:string]:any} = await this._call(connection, 'GET', `/products/${market}`);
         return {
-            ...raw,
-            base_min_size           : parseFloat(raw.base_min_size),
-            base_max_size           : parseFloat(raw.base_max_size),
-            quote_increment         : parseFloat(raw.quote_increment),
-            base_increment          : parseFloat(raw.base_increment),
-            min_market_funds        : parseFloat(raw.min_market_funds),
-            max_market_funds        : parseFloat(raw.max_market_funds),
-            // max_slippage_percentage : parseFloat(raw.max_slippage_percentage),
-        } as Market;
+            base_currency          : raw.base_currency,
+            quote_currency         : raw.quote_currency,
+            price_increment        : parseFloat(raw.quote_increment),
+            size_increment         : parseFloat(raw.base_increment),
+            trade_minimum          : parseFloat(raw.quote_increment),
+            trade_minimum_notional : 0,
+        };
     }
 
     async getBook(connection: CoinbaseConnection, market: string): Promise<Book> {
@@ -101,6 +99,9 @@ export class CoinbaseProvider implements Provider {
     async postOrder(connection: CoinbaseConnection, order: Order): Promise<any> {
         const bdy: {[index:string]:any} = {...order, product_id: order.market};
         delete bdy.market;
+        // Emulate Immediate-or-cancel and fill-or-kill modes
+        if (order.time_in_force == 'IOC') Object.assign(bdy, { time_in_force: 'GTT', cancel_after: 'minute' });
+        if (order.time_in_force == 'FOK') Object.assign(bdy, { time_in_force: 'GTT', cancel_after: 'minute' });
         return this._call(connection, 'POST', '/orders', bdy);
     }
 

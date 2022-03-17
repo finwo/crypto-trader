@@ -8,9 +8,10 @@ import { Order } from './type/order';
 import { Decimal } from 'decimal.js';
 
 const data = (() => {
-  const org = JSON.parse(readFileSync(__dirname + '/../../data/coinbase-calc.json').toString());
+  const datafile = __dirname + '/../../data/config.json';
+  const org = JSON.parse(readFileSync(datafile).toString());
   return observer(org, () => {
-    writeFileSync(__dirname + '/../../data/coinbase-calc.json', JSON.stringify(org, null, 2));
+    writeFileSync(datafile, JSON.stringify(org, null, 2));
   });
 })();
 
@@ -27,7 +28,7 @@ const strategies = {
         const market   = await provider.getMarket(connection, settings.market);
         const book     = await provider.getBook(connection, settings.market);
         const fees     = await provider.getFee(connection, settings.market);
-        const gap      = fees.taker * 3;
+        const gap      = Math.max(fees.taker * 3, settings.gap || 0);
 
         // Fetch quote and base accounts
         const account = {
@@ -50,21 +51,31 @@ const strategies = {
         }
 
         // Prepare orders
-        const buyOrder: Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'hour',side:'buy',post_only:false};
-        buyOrder.price = new Decimal(settings.target).times(new Decimal(1).minus(gap)).dividedBy(account.base.balance).dividedBy(market.quote_increment).round().times(market.quote_increment).toFixed();
-        // buyOrder.price = Math.floor((settings.target * (1 - gap) / account.base.balance) / market.quote_increment) * market.quote_increment;
-        buyOrder.size = new Decimal(settings.target).times(new Decimal(1).minus(gap)).times(gap).dividedBy(buyOrder.price).dividedBy(market.base_increment).round().times(market.base_increment).toFixed();
-        // buyOrder.size  = Math.floor(((settings.target * (1 - gap) * gap) / buyOrder.price) / market.base_increment ) * market.base_increment;
-        const sellOrder: Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'hour',side:'sell',post_only:false};
-        sellOrder.price = new Decimal(settings.target).times(new Decimal(1).plus(gap)).dividedBy(account.base.balance).dividedBy(market.quote_increment).round().times(market.quote_increment).toFixed();
-        // sellOrder.price = Math.floor((settings.target * (1 + gap) / account.base.balance) / market.quote_increment) * market.quote_increment;
-        sellOrder.size = new Decimal(settings.target).times(new Decimal(1).plus(gap)).times(gap).dividedBy(sellOrder.price).dividedBy(market.base_increment).round().times(market.base_increment).toFixed();
-        // sellOrder.size  = Math.floor(((settings.target * (1 + gap) * gap) / sellOrder.price) / market.base_increment ) * market.base_increment;
+        const buyOrder : Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'min',side:'buy',post_only:false};
+        const sellOrder: Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'min',side:'sell',post_only:false};
 
-        // Place orders
-        const buyResponse  = await provider.postOrder(connection, buyOrder as Order);
-        const sellResponse = await provider.postOrder(connection, sellOrder as Order);
+        // Calculate prices
+        buyOrder.price  = new Decimal(settings.target).times(new Decimal(1).minus(gap)).dividedBy(account.base.balance).dividedBy(market.price_increment).floor().times(market.price_increment).toFixed();
+        sellOrder.price = new Decimal(settings.target).times(new Decimal(1).plus(gap)).dividedBy(account.base.balance).dividedBy(market.price_increment).ceil().times(market.price_increment).toFixed();
 
+        // Calculate sizes
+        buyOrder.size  = new Decimal(settings.target).times(new Decimal(1).minus(gap)).times(gap).dividedBy(buyOrder.price).dividedBy(market.size_increment).round().times(market.size_increment).toFixed();
+        sellOrder.size = new Decimal(settings.target).times(new Decimal(1).plus(gap)).times(gap).dividedBy(sellOrder.price).dividedBy(market.size_increment).round().times(market.size_increment).toFixed();
+
+        // Limit price somewhat to 0.25-4.00 times the current market
+        // May overshoot target
+        if (parseFloat(buyOrder.price) < (book.bid.price * 0.25)) buyOrder.price = new Decimal(book.bid.price * 0.25).dividedBy(market.price_increment).round().times(market.price_increment).toFixed();
+        if (parseFloat(sellOrder.price) > (book.ask.price * 4)) sellOrder.price = new Decimal(book.ask.price * 4).dividedBy(market.price_increment).round().times(market.price_increment).toFixed();
+
+        // Check notional values
+        const buyPassNotional  = new Decimal(buyOrder.size).times(buyOrder.price).gte(market.trade_minimum_notional);
+        const sellPassNotional = new Decimal(sellOrder.size).times(sellOrder.price).gte(market.trade_minimum_notional);
+
+        // console.log('main', {market, gap, buyOrder, buyPassNotional, sellOrder, sellPassNotional});
+
+        // Place orders when larger than minimum
+        if ((buyOrder.size  >= market.trade_minimum) && buyPassNotional) await provider.postOrder(connection, buyOrder as Order);
+        if ((sellOrder.size >= market.trade_minimum) && buyPassNotional) await provider.postOrder(connection, sellOrder as Order);
     }
 };
 

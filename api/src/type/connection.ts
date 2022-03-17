@@ -3,6 +3,14 @@ type CommonConnection = {
   credentials: {[index:string]:any};
 };
 
+export type BinanceConnection = CommonConnection & {
+  provider    : "binance";
+  credentials : {
+    key    : string;
+    secret : string;
+  }
+};
+
 export type CoinbaseConnection = CommonConnection & {
   provider    : "coinbase";
   credentials : {
@@ -12,4 +20,4 @@ export type CoinbaseConnection = CommonConnection & {
   }
 };
 
-export type Connection = CoinbaseConnection;
+export type Connection = BinanceConnection | CoinbaseConnection;

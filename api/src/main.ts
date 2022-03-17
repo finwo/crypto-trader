@@ -46,8 +46,10 @@ const strategies = {
             settings.target *= 1.001;
         }
         // Decrease target to current value if quote < gap
+        let sufficientQuoteFunds = true;
         if (account.quote.balance < (settings.target * gap)) {
             settings.target = Math.min(settings.target, account.base.balance_quote);
+            sufficientQuoteFunds = false;
         }
 
         // Prepare orders
@@ -74,8 +76,8 @@ const strategies = {
         // console.log('main', {market, gap, buyOrder, buyPassNotional, sellOrder, sellPassNotional});
 
         // Place orders when larger than minimum
-        if ((buyOrder.size  >= market.trade_minimum) && buyPassNotional) await provider.postOrder(connection, buyOrder as Order);
-        if ((sellOrder.size >= market.trade_minimum) && buyPassNotional) await provider.postOrder(connection, sellOrder as Order);
+        if ((buyOrder.size  >= market.trade_minimum) && buyPassNotional && sufficientQuoteFunds) await provider.postOrder(connection, buyOrder as Order);
+        if ((sellOrder.size >= market.trade_minimum) && buyPassNotional                        ) await provider.postOrder(connection, sellOrder as Order);
     }
 };
 

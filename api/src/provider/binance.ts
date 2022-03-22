@@ -91,13 +91,16 @@ export class BinanceProvider implements Provider {
 
     async cancelOpenOrders(connection: BinanceConnection, market: string): Promise<any> {
         const client   = this._getClient(connection);
-        const response = await client.cancelOpenOrders(market);
 
-        // Report error
-        if (response.isAxiosError) {
-            console.warn('binance.cancelOpenOrders', { market, response: response.data });
-            return null;
-        }
+        // Fetch list first, as cancelOpenOrders is bugged
+        const openOrdersRaw = await client.openOrders({ symbol: market });
+
+        // Close 'em all
+        await Promise.allSettled(openOrdersRaw.data.map(async order => {
+            return client.cancelOrder(market, {
+                orderId: order.orderId,
+            });
+        }));
 
         return null;
     }

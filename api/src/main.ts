@@ -75,6 +75,9 @@ const strategies = {
 
         // console.log('main', {market, gap, buyOrder, buyPassNotional, sellOrder, sellPassNotional});
 
+        // Cancel open orders
+        await provider.cancelOpenOrders(connection, settings.market);
+
         // Place orders when larger than minimum
         if ((buyOrder.size  >= market.trade_minimum) && buyPassNotional && sufficientQuoteFunds) await provider.postOrder(connection, buyOrder as Order);
         if ((sellOrder.size >= market.trade_minimum) && buyPassNotional                        ) await provider.postOrder(connection, sellOrder as Order);

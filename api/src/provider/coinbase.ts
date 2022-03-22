@@ -96,6 +96,11 @@ export class CoinbaseProvider implements Provider {
         } as Fee;
     }
 
+    async cancelOpenOrders(connection: CoinbaseConnection, market: string): Promise<any> {
+        // Not required for the current strategies
+        return null;
+    }
+
     async postOrder(connection: CoinbaseConnection, order: Order): Promise<any> {
         const bdy: {[index:string]:any} = {...order, product_id: order.market};
         delete bdy.market;

@@ -89,12 +89,25 @@ export class BinanceProvider implements Provider {
         };
     }
 
+    async cancelOpenOrders(connection: BinanceConnection, market: string): Promise<any> {
+        const client   = this._getClient(connection);
+        const response = await client.cancelOpenOrders(market);
+
+        // Report error
+        if (response.isAxiosError) {
+            console.warn('binance.cancelOpenOrders', { market, response: response.data });
+            return null;
+        }
+
+        return null;
+    }
+
     async postOrder(connection: BinanceConnection, order: Order): Promise<any> {
         const client = this._getClient(connection);
         const market = this.getMarket(connection, order.market);
 
-        // Binance doesn't support GTT, emulate using IOC
-        if (order.time_in_force == 'GTT') order.time_in_force = 'IOC';
+        // Binance doesn't support GTT, emulate using GTC + earlier cancelOpenOrders call from strategy
+        if (order.time_in_force == 'GTT') order.time_in_force = 'GTC';
 
         try {
             const orderResponse = await client.newOrder(order.market, order.side, order.type, {

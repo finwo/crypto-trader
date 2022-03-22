@@ -10,5 +10,6 @@ export interface Provider {
     getMarket(connection: Connection, market: string): Promise<Market>;
     getBook(connection: Connection, market: string): Promise<Book>;
     getFee(connection: Connection, market: string): Promise<Fee>;
+    cancelOpenOrders(connection: Connection, market: string);
     postOrder(connection: Connection, order: Order): Promise<any>;
 }

@@ -53,8 +53,8 @@ const strategies = {
         }
 
         // Prepare orders
-        const buyOrder : Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'min',side:'buy',post_only:false};
-        const sellOrder: Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'min',side:'sell',post_only:false};
+        const buyOrder : Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'hour',side:'buy',post_only:false};
+        const sellOrder: Partial<Order> = {market:settings.market,type:'limit',time_in_force:'GTT',cancel_after:'hour',side:'sell',post_only:false};
 
         // Calculate prices
         buyOrder.price  = new Decimal(settings.target).times(new Decimal(1).minus(gap)).dividedBy(account.base.balance).dividedBy(market.price_increment).floor().times(market.price_increment).toFixed();

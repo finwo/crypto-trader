@@ -3,12 +3,13 @@
 import      { readFileSync, writeFileSync } from 'fs';
 import      { observer                    } from '@finwo/observer';
 import * as   providers                     from './provider';
+import * as   path                          from 'path';
 
 import { Order } from './type/order';
 import { Decimal } from 'decimal.js';
 
 const data = (() => {
-  const datafile = __dirname + '/../../data/config.json';
+  const datafile = path.resolve(__dirname + '/../../data/config.json');
   const org = JSON.parse(readFileSync(datafile).toString());
   return observer(org, () => {
     writeFileSync(datafile, JSON.stringify(org, null, 2));

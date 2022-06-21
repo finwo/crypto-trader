@@ -21,7 +21,6 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@binance/connector": "^1.8.1",
     "@finwo/observer": "^1.0.1",
     "decimal.js": "^10.3.1"
   },
